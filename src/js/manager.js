@@ -2,33 +2,29 @@
  * Create a new tab for the url that use entered.
  */
 function openNewTab() {
-  // Get the url from manager.html that use entered.
-  let url = document.querySelector('#url').value;
+  // Get the url from manager.html that user entered.
+  let url = $('#url').value;
 
-  // Create a new tab to the info page.
-  chrome.tabs.create({"url": url, "selected": true});
+  // Create a new tab with the url.
+  chrome.tabs.create({ "url": url, "selected": true });
 }
 
 function changeOption() {
-  let optionList;
-  let option = document.querySelector('#option');
+  let option = $('#option');
 
-  switch(document.querySelector('#command').value) {
+  switch($('#command').value) {
     case 'search':
-      optionList = "<option>-url</option>";
-      optionList += "<option>-title</option>";
+      option.append("<option>-url</option>");
+      option.append("<option>-title</option>");
       break;
     case 'order':
-      optionList = "<option>-time</option>";
-      optionList += "<option>-name</option>";
+      option.append("<option>-time</option>");
+      option.append("<option>-name</option>");
       break;
   }
-  option.innerHTML = optionList;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.body.querySelector('#btn_open_new_tab')
-    .addEventListener('click', openNewTab);
-  document.body.querySelector('#command')
-    .addEventListener('change', changeOption);
+  $('#btn-open-new-tab').addEventListener('click', openNewTab);
+  $('#command').addEventListener('change', changeOption);
 });
