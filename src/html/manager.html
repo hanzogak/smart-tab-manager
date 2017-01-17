@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Tab Manager</title>
+  <meta charset=UTF-8"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="../css/manager.css">
+</head>
+<body>
+
+<div>
+  <input type="text" id="url">
+  <button id="btn_open_new_tab">Open!</button>
+</div>
+
+<div>
+  <select id="command">
+    <option value="">Command</option>
+    <option value="search">search</option>
+    <option value="open">open</option>
+    <option value="order">order</option>
+  </select>
+
+  <select id="option">
+    <option value="">Option</option>
+  </select>
+
+  <input type="text" id="keyword" placeholder="keyword">
+
+  <button id="command_submit">GO</button>
+</div>
+
+<script src="../js/manager.js"></script>
+</body>
+</html>
