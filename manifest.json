@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Smart Tab Manager",
+  "version": "0.0.1",
+  "description": "Smart Tab Manager assists users to manage their Chrome tabs efficiently.",
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": "./resources/hanzo_128.png",
+    "default_title": "Smart Tab Manager",
+    "default_popup": "./src/html/manager.html"
+  },
+  "permissions": [
+    "tabs"
+  ]
+}
