@@ -1,0 +1,24 @@
+{
+  "name": "smart-tab-manager",
+  "version": "1.0.0",
+  "description": "Chrome extension that can assist users to manage their Chrome tabs effectively with a single command line",
+  "main": "background.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanzogak/smart-tab-manager.git"
+  },
+  "author": "hanzogak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hanzogak/smart-tab-manager/issues"
+  },
+  "homepage": "https://github.com/hanzogak/smart-tab-manager#readme",
+  "devDependencies": {
+    "gulp-qunit": "~0.2.1",
+    "gulp-util": "~2.2.14",
+    "gulp": "~3.5.1"
+  }
+}
