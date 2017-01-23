@@ -5,5 +5,3 @@ node_js:
 notifications:
   email: false
   slack: hanzogak:knRkPW0ecbWH6m70HcuoNP1U
-
-script: gulp test

@@ -3,14 +3,14 @@
  */
 function openNewTab() {
   // Get the url from manager.html that user entered.
-  let url = $('#url').value;
+  var url = $('#url').value;
 
   // Create a new tab with the url.
   chrome.tabs.create({ "url": url, "selected": true });
 }
 
 function changeOption() {
-  let option = $('#option');
+  var option = $('#option');
 
   switch($('#command').value) {
     case 'search':
