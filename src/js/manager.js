@@ -1,6 +1,7 @@
 /**
  * Create a new tab for the url that use entered.
  */
+<<<<<<< HEAD
 function openNewTab() {
   // Get the url from manager.html that user entered.
   var url = document.querySelector('#url').value;
@@ -111,4 +112,8 @@ document.addEventListener('DOMContentLoaded', function () {
   .addEventListener('change', changeOption);
   document.body.querySelector('#command-submit')
   .addEventListener('click', commandSubmit);
+=======
+$(function() {
+  //for travis test
+>>>>>>> f96c9998dfe8fbfb2d28f73c93974c0475540861
 });

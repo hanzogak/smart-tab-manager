@@ -4,7 +4,7 @@
   "description": "Chrome extension that can assist users to manage their Chrome tabs effectively with a single command line",
   "main": "background.js",
   "scripts": {
-    "test": "gulp"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,6 @@
   "devDependencies": {
     "gulp-qunit": "~0.2.1",
     "gulp-util": "~2.2.14",
-    "gulp": "~3.5.1"
+    "gulp": "~3.5.6"
   }
 }
