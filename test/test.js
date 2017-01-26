@@ -1,4 +1,4 @@
-QUnit.test("first test", 3, function() {
+QUnit.test("first test", function(assert) {
     var actual = 5 - 4;
 
     assert.ok(true, "passes because true is true");
