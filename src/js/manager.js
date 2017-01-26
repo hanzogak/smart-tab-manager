@@ -3,16 +3,16 @@
  */
 function openNewTab() {
   // Get the url from manager.html that user entered.
-  var url = $('#url').value;
+  let url = $('#url').value;
 
   // Create a new tab with the url.
   chrome.tabs.create({ "url": url, "selected": true });
 }
 
 function changeOption() {
-  var option = $('#option');
+  let option = $('#option');
 
-  switch($('#command').value) {
+  switch(document.querySelector('#command').value) {
     case 'search':
       option.append("<option>-url</option>");
       option.append("<option>-title</option>");
@@ -24,7 +24,7 @@ function changeOption() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  $('#btn-open-new-tab').addEventListener('click', openNewTab);
-  $('#command').addEventListener('change', changeOption);
+$(function() {
+    $('#btn-open-new-tab').click(openNewTab);
+    $('#command').change(changeOption);
 });

@@ -4,16 +4,26 @@
   "version": "0.0.1",
   "description": "Smart Tab Manager assists users to manage their Chrome tabs efficiently.",
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "page": "src/html/manager.html"
   },
   "browser_action": {
-    "default_icon": "./resources/hanzo_128.png",
+    "default_icon": "resources/hanzo_128.png",
     "default_title": "Smart Tab Manager",
-    "default_popup": "./src/html/manager.html"
+    "default_popup": "src/html/manager.html"
+  },
+  "omnibox": { "keyword" : "tabby" },
+  "icons": {
+    "128": "resources/hanzo_128.png"
   },
   "permissions": [
     "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": [ "<all_urls>" ],
+      "js": [
+        "src/js/manager.js"
+      ]
+    }
   ]
 }
