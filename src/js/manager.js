@@ -22,7 +22,7 @@ function changeOption() {
     option.options[i] = null;
   }
 
-  switch (document.querySelector('#command').value) {
+  switch ($('#command').val()) {
     case 'search':
       option.options.length = 0;
       option.add(new Option('-url', '-url'));
@@ -35,7 +35,7 @@ function changeOption() {
       break;
     case 'open':
       option.options.length = 0;
-      option.add(new Option(' ', ' '));
+      option.add(new Option('-url', '-url'));
       option.add(new Option('-saved', '-saved'));
       break;
     case 'close':
@@ -43,6 +43,10 @@ function changeOption() {
       option.add(new Option('-url', '-url'));
       option.add(new Option('-title', '-title'));
       break;
+    case 'window':
+      option.options.length = 0;
+      option.add(new Option('-url', '-url'));
+      option.add(new Option('-title', '-title'));
   }
 }
 
@@ -58,7 +62,7 @@ function commandSubmit(){
     case 'open':
       var url = document.querySelector('#keyword').value;
 
-      if(option.value === ' '){
+      if(option.value === '-url'){
         if (!(url.toString().substr(0, 8) === "https://"
             || url.toString().substr(0, 7) === "http://")) {
           url = "http://" + url;
@@ -101,11 +105,43 @@ function commandSubmit(){
         }
       }
       break;
+
+    case 'window':
+      var keyword = document.querySelector('#keyword').value;
+      var selectedTabs = [];
+      if(option.value === '-url'){
+        chrome.tabs.query({"currentWindow": true}, function(tabs){
+          for(var i = 0; i<tabs.length; i++) {
+            if(tabs[i].url.indexOf(keyword) > -1){
+              selectedTabs.push(tabs[i].id);
+            }
+          }
+          if(selectedTabs.length != 0){
+              chrome.windows.create({"tabId":selectedTabs[0]}, function(window){
+              chrome.tabs.move(selectedTabs, {"windowId":window.id, "index":-1});
+            })
+          }
+        })
+      }
+      else if(option.value === '-title'){
+        chrome.tabs.query({"currentWindow": true}, function(tabs){
+          for(var i = 0; i<tabs.length; i++) {
+            if(tabs[i].title.indexOf(keyword) > -1){
+              selectedTabs.push(tabs[i].id);
+            }
+          }
+          if(selectedTabs.length != 0){
+            chrome.windows.create({"tabId":selectedTabs[0]}, function(window){
+              chrome.tabs.move(selectedTabs, {"windowId":window.id, "index":-1});
+            })
+          }
+        })
+      }
   }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     $('#btn-open-new-tab').click(openNewTab);
     $('#command').change(changeOption);
-    $('#command-submit').change(commandSubmit);
+    $('#command-submit').click(commandSubmit);
 });
