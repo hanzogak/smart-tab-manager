@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <title>Smart Tab Manager</title>
-  <meta charset="UTF-8"/>
+<title>Smart Tab Manager</title>
+<meta charset="UTF-8"/>
 
+<link rel="stylesheet" href="../css/defaults.css">
+<link rel="stylesheet" href="../css/manager.css">
 
-  <link rel="stylesheet" href="../css/manager.css">
-  <body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/manager.js"></script>
 
-    <div>
-      <input type="text" id="url">
-      <button id="btn-open-new-tab">Open!</button>
-    </div>
+<body>
+<div class="title">Smart Tab Manager <span id="error_message"></span></div>
 
-    <div>
-      <select id="command">
+<!--
+<div>
+    <input type="text" id="url">
+    <button id="btn-open-new-tab">Open!</button>
+</div>
+-->
+
+<div class="command_line">
+    <select id="command">
         <option>Command</option>
         <option value="search">search</option>
         <option value="open">open</option>
         <option value="order">order</option>
-      </select>
+    </select>
 
-      <select id="option">
+    <select id="option">
         <option>Option</option>
-      </select>
+    </select>
 
-      <input type="text" id="keyword" placeholder="keyword">
+    <input type="text" id="keyword" placeholder="keyword">
 
-      <button id="command-submit">GO</button>
-    </div>
+    <button id="command-submit">GO</button>
+</div>
+</body>
 
-
-    <script src="../js/jquery.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.min.js"></script>
-    <script src="../js/manager.js"></script>
-
-  </body>
 </html>
