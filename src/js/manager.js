@@ -8,9 +8,9 @@ $(function() {
     $('#command-submit').click(function() {
         $('#error_message').text('');
 
-        let command = $('#command').val();
-        let option = $('#option').val();
-        let keyword = $('#keyword').val();
+        var command = $('#command').val();
+        var option = $('#option').val();
+        var keyword = $('#keyword').val();
 
         switch(command) {
             case 'search':
@@ -66,7 +66,7 @@ function searchTab(option, keyword) {
 
     if(option == 'url') {
         chrome.tabs.query({currentWindow: true}, function(tabList) {
-            for(let i = 0; i < tabList.length; i++) {
+            for(var i = 0; i < tabList.length; i++) {
                 if(tabList[i].url.includes(keyword)) {
                     chrome.tabs.highlight({'tabs': i});
                     return;
@@ -77,7 +77,7 @@ function searchTab(option, keyword) {
         });
     } else if(option == 'title') {
         chrome.tabs.query({currentWindow: true}, function(tabList) {
-            for(let i = 0; i < tabList.length; i++) {
+            for(var i = 0; i < tabList.length; i++) {
                 if(tabList[i].title.includes(keyword)) {
                     chrome.tabs.highlight({'tabs': i});
                     return;
