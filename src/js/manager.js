@@ -24,7 +24,7 @@ $(function() {
  * change option for command selection
  */
 function changeOption() {
-    let option = $('#option');
+    var option = $('#option');
     option.empty();
 
     switch($('#command').val()) {
@@ -45,7 +45,7 @@ function changeOption() {
  * Command - open
  */
 function openNewTab() {
-    let url = $('#url').val();
+    var url = $('#url').val();
 
     if (!(url.toString().substr(0, 8) === "https://"
         || url.toString().substr(0, 7) === "http://")) {
