@@ -1,90 +1,89 @@
+var options = {
+  'search': ['url', 'title'],
+  'open': ['url', 'title'],
+  'close': ['url', 'title'],
+  'order': ['time', 'name']
+};
+
 /*
- * functions that start with dom starting
+ * function that start with dom starting
  */
-$(function() {
-    $('#btn-open-new-tab').click(openNewTab);
-    $('#command').change(changeOption);
+$(function () {
+  $('#command').change(changeOption).change();
 
-    $('#command-submit').click(function() {
-        $('#error_message').text('');
+  // click submit button
+  $('#command-submit').click(commandSubmit);
 
-        var command = $('#command').val();
-        var option = $('#option').val();
-        var keyword = $('#keyword').val();
-
-        switch(command) {
-            case 'search':
-                searchTab(option, keyword);
-                break;
-        }
-    });
+  // enter keyboard in keyword input
+  $('#keyword').keydown(function (e) {
+    if (e.keyCode == 13) {
+      commandSubmit();
+    }
+  });
 });
 
 /*
- * change option for command selection
+ * function for change option for command selection
  */
 function changeOption() {
-    var option = $('#option');
-    option.empty();
+  var option = $('#option');
+  option.empty();
 
-    switch($('#command').val()) {
-        case 'search':
-        case 'open':
-        case 'close':
-            option.append(new Option('-url', 'url'));
-            option.append(new Option('-title', 'title'));
-            break;
-        case 'order':
-            option.append(new Option('-time', 'time'));
-            option.append(new Option('-name', 'name'));
-            break;
-    }
+  var command = $('#command').val();
+
+  for (var i = 0; i < options[command].length; i++) {
+    option.append(new Option('-' + options[command][i], options[command][i]));
+  }
 }
 
 /*
- * Command - open
+ * function for command submit
  */
-function openNewTab() {
-    var url = $('#url').val();
+function commandSubmit() {
+  $('#error-message').text('');
 
-    if (!(url.toString().substr(0, 8) === "https://"
-        || url.toString().substr(0, 7) === "http://")) {
-        url = "http://" + url;
-    }
+  var command = $('#command').val();
+  var option = $('#option').val();
+  var keyword = $('#keyword').val();
 
-    chrome.tabs.create({ "url": url, "selected": true });
+  switch (command) {
+    case 'search':
+      handleSearch(option, keyword);
+      break;
+  }
 }
 
 /*
- * Command - search
+ * function for search
  */
-function searchTab(option, keyword) {
-    if(!keyword) {
-        $('#error_message').text('input any keyword');
-        return;
-    }
+function handleSearch(option, keyword) {
+  if (!keyword) {
+    $('#error-message').text('input any keyword');
+    return;
+  }
 
-    if(option == 'url') {
-        chrome.tabs.query({currentWindow: true}, function(tabList) {
-            for(var i = 0; i < tabList.length; i++) {
-                if(tabList[i].url.includes(keyword)) {
-                    chrome.tabs.highlight({'tabs': i});
-                    return;
-                }
-            }
+  if (option == 'url') {
+    chrome.tabs.query({currentWindow: true}, function (tabList) {
+      for (var i = 0; i < tabList.length; i++) {
+        if (tabList[i].url.includes(keyword)) {
+          chrome.tabs.highlight({'tabs': i});
+          return;
+        }
+      }
 
-            $('#error_message').text('no matched tabs');
-        });
-    } else if(option == 'title') {
-        chrome.tabs.query({currentWindow: true}, function(tabList) {
-            for(var i = 0; i < tabList.length; i++) {
-                if(tabList[i].title.includes(keyword)) {
-                    chrome.tabs.highlight({'tabs': i});
-                    return;
-                }
-            }
+      $('#error-message').text('no matched tabs');
+    });
+  }
+  else if (option == 'title') {
+    chrome.tabs.query({currentWindow: true}, function (tabList) {
+      for (var i = 0; i < tabList.length; i++) {
+        if (tabList[i].title.includes(keyword)) {
+          chrome.tabs.highlight({'tabs': i});
+          return;
+        }
+      }
 
-            $('#error_message').text('no matched tabs');
-        });
-    }
+      $('#error-message').text('no matched tabs');
+    });
+  }
 }

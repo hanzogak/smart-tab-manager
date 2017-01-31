@@ -10,30 +10,21 @@
 <script type="text/javascript" src="../js/manager.js"></script>
 
 <body>
-<div class="title">Smart Tab Manager <span id="error_message"></span></div>
+<div class="title">Smart Tab Manager <span id="error-message"></span></div>
 
-<!--
-<div>
-    <input type="text" id="url">
-    <button id="btn-open-new-tab">Open!</button>
-</div>
--->
+<div class="command-line">
+  <select id="command">
+    <option value="search">search</option>
+    <option value="open">open</option>
+    <option value="order">order</option>
+  </select>
 
-<div class="command_line">
-    <select id="command">
-        <option>Command</option>
-        <option value="search">search</option>
-        <option value="open">open</option>
-        <option value="order">order</option>
-    </select>
+  <select id="option">
+  </select>
 
-    <select id="option">
-        <option>Option</option>
-    </select>
+  <input type="text" id="keyword" placeholder="keyword">
 
-    <input type="text" id="keyword" placeholder="keyword">
-
-    <button id="command-submit">GO</button>
+  <button id="command-submit">GO</button>
 </div>
 </body>
 
