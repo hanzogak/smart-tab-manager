@@ -1,31 +1,47 @@
-/**
- * Create a new tab for the url that use entered.
+var options = {
+  'search': ['url', 'title'],
+  'open': ['url', 'saved'],
+  'close': ['url', 'title'],
+  'order': ['time', 'name'],
+  'window': ['url', 'title']
+};
+
+/*
+ * function that start with dom starting
+ */
+$(function () {
+  $('#command').change(changeOption).change();
+
+  // click submit button
+  $('#command-submit').click(commandSubmit);
+
+  // enter keyboard in keyword input
+  $('#keyword').keydown(function (e) {
+    if (e.keyCode == 13) {
+      commandSubmit();
+    }
+  });
+});
+
+/*
+ * function for change option for command selection
  */
 function changeOption() {
   var option = $('#option');
   option.empty();
 
-  switch ($('#command').val()) {
-    case 'close':
-    case 'window':
-    case 'search':
-      option.append(new Option('-url', 'url'));
-      option.append(new Option('-title', 'title'));
-      break;
-    case 'order':
-      option.append(new Option('-time', 'time'));
-      option.append(new Option('-name', 'name'));
-      break;
-    case 'open':
-      option.append(new Option('-url', 'url'));
-      option.append(new Option('-saved', 'saved'));
-      break;
+  var command = $('#command').val();
+
+  for (var i = 0; i < options[command].length; i++) {
+    option.append(new Option('-' + options[command][i], options[command][i]));
   }
 }
 
+/*
+ * function for command submit
+ */
 function commandSubmit() {
-
-  $('#error_message').text('');
+  $('#error-message').text('');
 
   var command = $('#command').val();
   var option = $('#option').val();
@@ -35,18 +51,14 @@ function commandSubmit() {
     case 'search':
       handleSearch(option, keyword);
       break;
-
     case 'order':
       break;
-
     case 'open':
       handleOpen(option, keyword);
       break;
-
     case 'close':
       handleClose(option, keyword);
       break;
-
     case 'window':
       handleWindow(option, keyword);
       break;
@@ -117,7 +129,38 @@ function handleWindow(option, keyword){
   }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-  $('#command').change(changeOption);
-  $('#command-submit').click(commandSubmit);
-});
+/*
+ * function for search
+ */
+function handleSearch(option, keyword) {
+  if (!keyword) {
+    $('#error-message').text('input any keyword');
+    return;
+  }
+
+  if (option == options.search[0]) {
+    chrome.tabs.query({currentWindow: true}, function (tabList) {
+      for (var i = 0; i < tabList.length; i++) {
+        if (tabList[i].url.includes(keyword)) {
+          chrome.tabs.highlight({'tabs': i});
+          return;
+        }
+      }
+
+      $('#error-message').text('no matched tabs');
+    });
+  }
+  else if (option == options.search[1]) {
+    chrome.tabs.query({currentWindow: true}, function (tabList) {
+      for (var i = 0; i < tabList.length; i++) {
+        if (tabList[i].title.includes(keyword)) {
+          chrome.tabs.highlight({'tabs': i});
+          return;
+        }
+      }
+
+      $('#error-message').text('no matched tabs');
+    });
+  }
+}
+

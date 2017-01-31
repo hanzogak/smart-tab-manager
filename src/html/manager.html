@@ -1,40 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <title>Smart Tab Manager</title>
-  <meta charset="UTF-8"/>
+<title>Smart Tab Manager</title>
+<meta charset="UTF-8"/>
 
+<link rel="stylesheet" href="../css/defaults.css">
+<link rel="stylesheet" href="../css/manager.css">
 
-  <link rel="stylesheet" href="../css/manager.css">
-  <body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/manager.js"></script>
 
-    <div>
-      <input type="text" id="url">
-      <button id="btn-open-new-tab">Open!</button>
-    </div>
+<body>
+<div class="title">Smart Tab Manager <span id="error-message"></span></div>
 
-    <div>
+    <div class="command-line">
       <select id="command">
-        <option>Command</option>
         <option value="search">search</option>
         <option value="order">order</option>
         <option value="open">open</option>
         <option value="close">close</option>
         <option value="window">window</option>
       </select>
-
-      <select id="option">
-        <option>Option</option>
-      </select>
-
-      <input type="text" id="keyword" placeholder="keyword">
-
-      <button id="command-submit">GO</button>
     </div>
 
+  <select id="option">
+  </select>
 
-    <script src="../js/jquery.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.min.js"></script>
-    <script src="../js/manager.js"></script>
+  <input type="text" id="keyword" placeholder="keyword">
 
-  </body>
+  <button id="command-submit">GO</button>
+</div>
+</body>
+
 </html>

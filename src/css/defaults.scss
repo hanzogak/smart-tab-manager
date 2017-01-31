@@ -1,0 +1,111 @@
+/*
+YUI 3.18.1 (build f7e7bcb)
+Copyright 2014 Yahoo! Inc. All rights reserved.
+Licensed under the BSD License.
+http://yuilibrary.com/license/
+*/
+
+html {
+  color: #424242;
+  background: #FFF
+}
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {
+  margin: 0;
+  padding: 0
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0
+}
+
+fieldset, img {
+  border: 0
+}
+
+address, caption, cite, code, dfn, em, th, var {
+  font-style: normal;
+  font-weight: normal
+}
+
+ol, ul {
+  list-style: none
+}
+
+caption, th {
+  text-align: left
+}
+
+q:before, q:after {
+  content: ''
+}
+
+abbr, acronym {
+  border: 0;
+  font-variant: normal
+}
+
+sup {
+  vertical-align: text-top
+}
+
+sub {
+  vertical-align: text-bottom
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  *font-size: 100%
+}
+
+legend {
+  color: #000
+}
+
+#yui3-css-stamp.cssreset {
+  display: none
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  * {
+    border: none;
+  }
+}
+
+input[type='number'], input[type='text'], input[type='password'], input[type='file'], select, option, textarea, input[type='submit'], button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border-radius: 0;
+  &:focus {
+    outline: 0;
+  }
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+input:-webkit-autofill {
+  background-color: transparent !important;
+  color: inherit !important;;
+}
+
+[contentEditable=true]:empty:not(:focus):before {
+  content: attr(data-ph);
+  color: #939598;
+}
+
+[contentEditable=true]:focus {
+  outline: none;
+}
