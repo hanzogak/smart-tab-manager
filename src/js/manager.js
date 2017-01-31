@@ -62,7 +62,7 @@ function handleSearch(option, keyword) {
     return;
   }
 
-  if (option == 'url') {
+  if (option == options.search[0]) {
     chrome.tabs.query({currentWindow: true}, function (tabList) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].url.includes(keyword)) {
@@ -74,7 +74,7 @@ function handleSearch(option, keyword) {
       $('#error-message').text('no matched tabs');
     });
   }
-  else if (option == 'title') {
+  else if (option == options.search[1]) {
     chrome.tabs.query({currentWindow: true}, function (tabList) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].title.includes(keyword)) {
