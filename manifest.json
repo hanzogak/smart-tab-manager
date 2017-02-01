@@ -16,7 +16,8 @@
     "128": "resources/hanzo_128.png"
   },
   "permissions": [
-    "tabs"
+    "tabs",
+		"storage"
   ],
   "content_scripts": [
     {

@@ -52,6 +52,7 @@ function commandSubmit() {
       handleSearch(option, keyword);
       break;
     case 'order':
+			handleOrder(option, keyword);
       break;
     case 'open':
       handleOpen(option, keyword);
@@ -63,6 +64,25 @@ function commandSubmit() {
       handleWindow(option, keyword);
       break;
   }
+}
+function handleOrder(option, keyword){
+	if(option === 'time'){
+	  
+  }
+	else if(option === 'name'){
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      tabs.sort(function (low, high){
+        if(low.title < high.title) return -1;
+        else if(low.title == high.title) return 0;
+        else return 1;
+      });
+      for(var i = 0; i < tabs.length; i++){
+        chrome.tabs.move(tabs[i].id, {index: i});
+      }
+
+    });
+	}
+
 }
 function handleOpen(option, keyword) {
   if (option === 'url') {
