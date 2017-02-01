@@ -3,7 +3,8 @@ var options = {
   'open': ['url', 'saved'],
   'close': ['url', 'title'],
   'order': ['time', 'name'],
-  'window': ['url', 'title']
+  'window': ['url', 'title'],
+  'suspend': ['older', 'url', 'title'] // how to indicate all tabs?
 };
 
 /*
@@ -63,11 +64,59 @@ function commandSubmit() {
     case 'window':
       handleWindow(option, keyword);
       break;
+    case 'suspend':
+      handleSuspend(option, keyword);
+      break;
   }
+}
+function handleSuspend(option, keyword){
+  if(option === 'older'){
+  //TODO: develop 'older' option
+  }
+  else if(option === 'url'){
+    var lowercase_keyword = keyword.toLowerCase();
+
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      var discarded_num = 0;
+      for(var i = 0; i < tabs.length; i++){
+        var lowercase_url = tabs[i].url.toLowerCase();
+        if(lowercase_url.includes(lowercase_keyword) && !tabs[i].discarded){
+          console.log('title: ' + tabs[i].title + ', id: ' + tabs[i].id);
+          chrome.tabs.discard(tabs[i].id);
+          discarded_num++;
+        }
+      }
+      if(discarded_num != 0){
+        alert(discarded_num + ' tabs are suspended.');
+      }
+    });
+
+
+  }
+  else if(option === 'title'){
+    var lowercase_keyword = keyword.toLowerCase();
+
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      var discarded_num = 0;
+      for(var i = 0; i < tabs.length; i++){
+        var lowercase_title = tabs[i].title.toLowerCase();
+        if(lowercase_title.includes(lowercase_keyword && !tabs[i].discarded)){
+          chrome.tabs.discard(tabs[i].id);
+          discarded_num++;
+        }
+      }
+      if(discarded_num != 0){
+        alert(discarded_num + ' tabs are suspended.');
+      }
+    });
+
+  }
+
+
 }
 function handleOrder(option, keyword){
 	if(option === 'time'){
-	  
+	 //TODO: develop time option 
   }
 	else if(option === 'name'){
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
