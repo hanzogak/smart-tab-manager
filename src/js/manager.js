@@ -1,9 +1,9 @@
 var options = {
   'search': ['url', 'title'],
   'open': ['url', 'saved'],
-  'close': ['url', 'title'],
+  'close': ['all', 'url', 'title'],
   'order': ['time', 'name'],
-  'window': ['url', 'title']
+  'window': ['all', 'url', 'title']
 };
 
 /*
@@ -71,7 +71,7 @@ function handleOpen(option, keyword) {
     return;
   }
 
-  if (option === 'url') {
+  if (option === options.open[0]) {
     if (!(keyword.substr(0, 8) === 'https://'
       || keyword.substr(0, 7) === 'http://')) {
       keyword = 'http://' + keyword;
@@ -79,6 +79,9 @@ function handleOpen(option, keyword) {
     chrome.tabs.create({"url": keyword, "selected": true});
   } else if (option === '-saved') {
     //todo need 'save' function
+  }
+  else if(option === options.open[1]){
+
   }
 }
 
@@ -89,33 +92,45 @@ function handleClose(option, keyword) {
     return;
   }
 
-  if (option === 'url') {
+  if(option === options.close[0]){
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
-
-      if (tabs.length == 0) {
-        $('#error-message').text('no matched tabs');
-        return;
-      }
-
+      var flag = false;
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].url.indexOf(keyword) > -1) {
+        if (tabs[i].url.indexOf(keyword) > -1 || tabs[i].title.indexOf(keyword) > -1) {
           chrome.tabs.remove(tabs[i].id);
+          flag = true;
         }
+      }
+      if(flag == false){
+        $('#error-message').text('no matched tabs');
       }
     });
   }
-  else if (option === 'title') {
+  else if (option === options.close[1]) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
-
-      if (tabs.length == 0) {
-        $('#error-message').text('no matched tabs');
-        return;
+      var flag = false;
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].url.indexOf(keyword) > -1) {
+          chrome.tabs.remove(tabs[i].id);
+          flag = true;
+        }
       }
-
+      if(flag == false){
+        $('#error-message').text('no matched tabs');
+      }
+    });
+  }
+  else if (option === options.close[2]) {
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      var flag = false;
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
           chrome.tabs.remove(tabs[i].id);
+          flag = true;
         }
+      }
+      if(flag == false){
+        $('#error-message').text('no matched tabs');
       }
     });
   }
@@ -129,7 +144,24 @@ function handleWindow(option, keyword){
   }
 
   var selectedTabs = [];
-  if (option === 'url') {
+  if(option === options.window[0]){
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].url.indexOf(keyword) > -1 || tabs[i].title.indexOf(keyword) > -1) {
+          selectedTabs.push(tabs[i].id);
+        }
+      }
+      if (selectedTabs.length != 0) {
+        chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
+          chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
+        })
+      }
+      else{
+        $('#error-message').text('no matched tabs');
+      }
+    })
+  }
+  else if (option === options.window[1]) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1) {
@@ -146,7 +178,7 @@ function handleWindow(option, keyword){
       }
     })
   }
-  else if (option === 'title') {
+  else if (option === options.window[2]) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
