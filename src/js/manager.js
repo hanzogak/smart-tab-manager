@@ -61,9 +61,18 @@ function commandSubmit() {
       break;
   }
 }
-function handleOpen(option, keyword) {
+
+function emptyKeyword(keyword){
   if (!keyword) {
     $('#error-message').text('input any keyword');
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function handleOpen(option, keyword) {
+  if (emptyKeyword(keyword)){
     return;
   }
   if (option === CONST_URL) {
@@ -77,8 +86,7 @@ function handleOpen(option, keyword) {
   }
 }
 function handleClose(option, keyword) {
-  if (!keyword) {
-    $('#error-message').text('input any keyword');
+  if (emptyKeyword(keyword)){
     return;
   }
   var selectedTabs = [];
@@ -91,15 +99,13 @@ function handleClose(option, keyword) {
       }
       if(selectedTabs.length === 0){
         $('#error-message').text('no matched tabs');
-      }
-      else{
+      } else {
         if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
           chrome.tabs.remove(selectedTabs);
         }
       }
     });
-  }
-  else if (option === CONST_URL) {
+  } else if (option === CONST_URL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1) {
@@ -108,15 +114,13 @@ function handleClose(option, keyword) {
       }
       if(selectedTabs.length === 0){
         $('#error-message').text('no matched tabs');
-      }
-      else{
+      } else {
         if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
           chrome.tabs.remove(selectedTabs);
         }
       }
     });
-  }
-  else if (option === CONST_TITLE) {
+  } else if (option === CONST_TITLE) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
@@ -125,8 +129,7 @@ function handleClose(option, keyword) {
       }
       if(selectedTabs.length === 0){
         $('#error-message').text('no matched tabs');
-      }
-      else{
+      } else {
         if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
           chrome.tabs.remove(selectedTabs);
         }
@@ -135,8 +138,7 @@ function handleClose(option, keyword) {
   }
 }
 function handleWindow(option, keyword){
-  if (!keyword) {
-    $('#error-message').text('input any keyword');
+  if (emptyKeyword(keyword)){
     return;
   }
   var selectedTabs = [];
@@ -153,13 +155,11 @@ function handleWindow(option, keyword){
             chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
           })
         }
-      }
-      else{
+      } else {
         $('#error-message').text('no matched tabs');
       }
     })
-  }
-  else if (option === CONST_URL) {
+  } else if (option === CONST_URL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1) {
@@ -167,18 +167,17 @@ function handleWindow(option, keyword){
         }
       }
       if (selectedTabs.length != 0) {
-        if(confirm("Do you really want to move selected " + selectedTabs.length + " tabs to a new window?")) {
+        if(confirm("Do you really want to move selected " +
+            selectedTabs.length + " tabs to a new window?")) {
           chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
             chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
           })
         }
-      }
-      else{
+      } else {
         $('#error-message').text('no matched tabs');
       }
     })
-  }
-  else if (option === CONST_TITLE) {
+  } else if (option === CONST_TITLE) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
@@ -186,13 +185,13 @@ function handleWindow(option, keyword){
         }
       }
       if (selectedTabs.length != 0) {
-        if(confirm("Do you really want to move selected " + selectedTabs.length + " tabs to a new window?")) {
+        if(confirm("Do you really want to move selected " +
+            selectedTabs.length + " tabs to a new window?")) {
           chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
             chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
           })
         }
-      }
-      else{
+      } else {
         $('#error-message').text('no matched tabs');
       }
     })
@@ -202,8 +201,7 @@ function handleWindow(option, keyword){
  * function for search
  */
 function handleSearch(option, keyword) {
-  if (!keyword) {
-    $('#error-message').text('input any keyword');
+  if (emptyKeyword(keyword)){
     return;
   }
   if (option == CONST_URL) {
@@ -216,8 +214,7 @@ function handleSearch(option, keyword) {
       }
       $('#error-message').text('no matched tabs');
     });
-  }
-  else if (option == CONST_TITLE) {
+  } else if (option == CONST_TITLE) {
     chrome.tabs.query({currentWindow: true}, function (tabList) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].title.includes(keyword)) {
