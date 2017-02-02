@@ -1,20 +1,23 @@
+//
+var CONST_URL = 'url';
+var CONST_TITLE = 'title';
+var CONST_SAVED = 'saved';
+var CONST_ALL = 'all';
+// This is const variable. Always only append action is allowed.
 var options = {
-  'search': ['url', 'title'],
-  'open': ['url', 'saved'],
-  'close': ['all', 'url', 'title'],
+  'search': [CONST_URL, CONST_TITLE],
+  'open': [CONST_URL, CONST_SAVED],
+  'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': ['time', 'name'],
-  'window': ['all', 'url', 'title']
+  'window': [CONST_ALL, CONST_URL, CONST_TITLE]
 };
-
 /*
  * function that start with dom starting
  */
 $(function () {
   $('#command').change(changeOption).change();
-
   // click submit button
   $('#command-submit').click(commandSubmit);
-
   // enter keyboard in keyword input
   $('#keyword').keydown(function (e) {
     if (e.keyCode == 13) {
@@ -22,31 +25,25 @@ $(function () {
     }
   });
 });
-
 /*
  * function for change option for command selection
  */
 function changeOption() {
   var option = $('#option');
   option.empty();
-
   var command = $('#command').val();
-
   for (var i = 0; i < options[command].length; i++) {
     option.append(new Option('-' + options[command][i], options[command][i]));
   }
 }
-
 /*
  * function for command submit
  */
 function commandSubmit() {
   $('#error-message').text('');
-
   var command = $('#command').val();
   var option = $('#option').val();
   var keyword = $('#keyword').val();
-
   switch (command) {
     case 'search':
       handleSearch(option, keyword);
@@ -65,35 +62,27 @@ function commandSubmit() {
   }
 }
 function handleOpen(option, keyword) {
-
   if (!keyword) {
     $('#error-message').text('input any keyword');
     return;
   }
-
-  if (option === options.open[0]) {
+  if (option === CONST_URL) {
     if (!(keyword.substr(0, 8) === 'https://'
       || keyword.substr(0, 7) === 'http://')) {
       keyword = 'http://' + keyword;
     }
     chrome.tabs.create({"url": keyword, "selected": true});
-  } else if (option === '-saved') {
+  } else if (option === CONST_SAVED) {
     //todo need 'save' function
   }
-  else if(option === options.open[1]){
-
-  }
 }
-
 function handleClose(option, keyword) {
-
   if (!keyword) {
     $('#error-message').text('input any keyword');
     return;
   }
-
   var selectedTabs = [];
-  if(option === options.close[0]){
+  if(option === CONST_ALL){
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1 || tabs[i].title.indexOf(keyword) > -1) {
@@ -110,7 +99,7 @@ function handleClose(option, keyword) {
       }
     });
   }
-  else if (option === options.close[1]) {
+  else if (option === CONST_URL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1) {
@@ -127,7 +116,7 @@ function handleClose(option, keyword) {
       }
     });
   }
-  else if (option === options.close[2]) {
+  else if (option === CONST_TITLE) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
@@ -145,16 +134,13 @@ function handleClose(option, keyword) {
     });
   }
 }
-
 function handleWindow(option, keyword){
-
   if (!keyword) {
     $('#error-message').text('input any keyword');
     return;
   }
-
   var selectedTabs = [];
-  if(option === options.window[0]){
+  if(option === CONST_ALL){
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1 || tabs[i].title.indexOf(keyword) > -1) {
@@ -173,7 +159,7 @@ function handleWindow(option, keyword){
       }
     })
   }
-  else if (option === options.window[1]) {
+  else if (option === CONST_URL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1) {
@@ -192,7 +178,7 @@ function handleWindow(option, keyword){
       }
     })
   }
-  else if (option === options.window[2]) {
+  else if (option === CONST_TITLE) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
@@ -212,7 +198,6 @@ function handleWindow(option, keyword){
     })
   }
 }
-
 /*
  * function for search
  */
@@ -221,8 +206,7 @@ function handleSearch(option, keyword) {
     $('#error-message').text('input any keyword');
     return;
   }
-
-  if (option == options.search[0]) {
+  if (option == CONST_URL) {
     chrome.tabs.query({currentWindow: true}, function (tabList) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].url.includes(keyword)) {
@@ -230,11 +214,10 @@ function handleSearch(option, keyword) {
           return;
         }
       }
-
       $('#error-message').text('no matched tabs');
     });
   }
-  else if (option == options.search[1]) {
+  else if (option == CONST_TITLE) {
     chrome.tabs.query({currentWindow: true}, function (tabList) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].title.includes(keyword)) {
@@ -242,9 +225,7 @@ function handleSearch(option, keyword) {
           return;
         }
       }
-
       $('#error-message').text('no matched tabs');
     });
   }
 }
-
