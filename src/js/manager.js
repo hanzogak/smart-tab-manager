@@ -65,6 +65,12 @@ function commandSubmit() {
   }
 }
 function handleOpen(option, keyword) {
+
+  if (!keyword) {
+    $('#error-message').text('input any keyword');
+    return;
+  }
+
   if (option === 'url') {
     if (!(keyword.substr(0, 8) === 'https://'
       || keyword.substr(0, 7) === 'http://')) {
@@ -77,8 +83,20 @@ function handleOpen(option, keyword) {
 }
 
 function handleClose(option, keyword) {
+
+  if (!keyword) {
+    $('#error-message').text('input any keyword');
+    return;
+  }
+
   if (option === 'url') {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
+
+      if (tabs.length == 0) {
+        $('#error-message').text('no matched tabs');
+        return;
+      }
+
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1) {
           chrome.tabs.remove(tabs[i].id);
@@ -88,6 +106,12 @@ function handleClose(option, keyword) {
   }
   else if (option === 'title') {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
+
+      if (tabs.length == 0) {
+        $('#error-message').text('no matched tabs');
+        return;
+      }
+
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
           chrome.tabs.remove(tabs[i].id);
@@ -98,6 +122,12 @@ function handleClose(option, keyword) {
 }
 
 function handleWindow(option, keyword){
+
+  if (!keyword) {
+    $('#error-message').text('input any keyword');
+    return;
+  }
+
   var selectedTabs = [];
   if (option === 'url') {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
@@ -110,6 +140,9 @@ function handleWindow(option, keyword){
         chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
           chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
         })
+      }
+      else{
+        $('#error-message').text('no matched tabs');
       }
     })
   }
@@ -124,6 +157,9 @@ function handleWindow(option, keyword){
         chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
           chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
         })
+      }
+      else{
+        $('#error-message').text('no matched tabs');
       }
     })
   }
