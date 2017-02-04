@@ -3,7 +3,8 @@ var options = {
   'open': ['url', 'saved'],
   'close': ['url', 'title'],
   'order': ['time', 'name'],
-  'window': ['url', 'title']
+  'window': ['url', 'title'],
+  'preview': ['all']
 };
 
 /*
@@ -62,6 +63,8 @@ function commandSubmit() {
     case 'window':
       handleWindow(option, keyword);
       break;
+    case 'preview':
+      handlePreview();
   }
 }
 function handleOpen(option, keyword) {
@@ -97,7 +100,7 @@ function handleClose(option, keyword) {
   }
 }
 
-function handleWindow(option, keyword){
+function handleWindow(option, keyword) {
   var selectedTabs = [];
   if (option === 'url') {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
@@ -164,3 +167,9 @@ function handleSearch(option, keyword) {
   }
 }
 
+/*
+ * function for preview
+ */
+function handlePreview() {
+  window.location.href = "preview.html";
+}

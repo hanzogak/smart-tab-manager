@@ -1,0 +1,25 @@
+body {
+  margin: 20px;
+  width: 400px;
+  color: #424242; }
+  body > .title {
+    font-weight: bold; }
+
+#tab-list {
+  overflow: hidden; }
+  #tab-list > .tab {
+    float: left;
+    margin: 3px;
+    width: 126px; }
+    #tab-list > .tab > .title {
+      padding: 7px 0;
+      height: 30px;
+      line-height: 30px;
+      background-color: #FFBF00; }
+    #tab-list > .tab > .url {
+      padding: 7px;
+      height: 60px;
+      line-height: 20px;
+      background-color: #dcdcdc; }
+
+/*# sourceMappingURL=preview.css.map */

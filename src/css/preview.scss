@@ -1,0 +1,38 @@
+$deep_yellow: #FFBF00;
+$dark_gray: #424242;
+$light_gray: #dcdcdc;
+$error_red: #EE5757;
+
+body {
+  margin: 20px;
+  width: 400px;
+  color: $dark_gray;
+
+  > .title {
+    font-weight: bold;
+  }
+}
+
+#tab-list {
+  overflow: hidden;
+
+  > .tab {
+    float: left;
+    margin: 3px;
+    width: 126px;
+
+    > .title {
+      padding: 7px 0;
+      height: 30px;
+      line-height: 30px;
+      background-color: $deep_yellow;
+    }
+
+    > .url {
+      padding: 7px;
+      height: 60px;
+      line-height: 20px;
+      background-color: $light_gray;
+    }
+  }
+}
