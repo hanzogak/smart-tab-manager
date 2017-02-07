@@ -1,0 +1,75 @@
+$deep_yellow: #FFBF00;
+$dark_gray: #424242;
+$light_gray: #dcdcdc;
+$error_red: #EE5757;
+$pinkish-gray: #bdbdbd;
+$warm-gray: #757575;
+$white-two: #dcdcdc;
+$white-four: #eeeeee;
+
+#tab-list {
+  border-radius: 4px;
+  overflow: hidden;
+
+  > .tab {
+    position: relative;
+    float: left;
+    margin: 5px 1.5%;
+    width: 30%;
+    cursor: pointer;
+
+    > .delete {
+      display: none;
+      position: absolute;
+      top: -7px;
+      right: -7px;
+
+      width: 20px;
+      height: 20px;
+      background: {
+        image: url('../../resources/delete.png');
+        repeat: no-repeat;
+        size: 20px;
+      }
+      cursor: pointer;
+    }
+
+    > .title {
+      padding: 0 8px;
+      height: 30px;
+      line-height: 30px;
+      background-color: $pinkish-gray;
+
+      font-size: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: pre;
+    }
+
+    > .url {
+      padding: 8px;
+      height: 60px;
+      line-height: 11px;
+      background-color: $white-four;
+
+      font-size: 8px;
+      overflow: hidden;
+    }
+
+    &.active {
+      > .title {
+        background-color: $deep_yellow;
+        color: white;
+      }
+    }
+
+    &:hover {
+      transition: box-shadow .3s ease-out;
+      box-shadow : 0 0 10px;
+
+      > .delete {
+        display: block;
+      }
+    }
+  }
+}

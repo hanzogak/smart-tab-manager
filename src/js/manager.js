@@ -10,7 +10,8 @@ var options = {
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': ['time', 'name'],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'preview': [CONST_ALL]
+  'preview': [CONST_ALL],
+  'merge': [CONST_URL, CONST_TITLE]
 };
 /*
  * function that start with dom starting
@@ -62,6 +63,9 @@ function commandSubmit() {
       break;
     case 'preview':
       handlePreview();
+      break;
+    case 'merge':
+      handleMerge(option, keyword);
   }
 }
 
@@ -240,4 +244,15 @@ function handleSearch(option, keyword) {
 function handlePreview(indexArr) {
   var params = indexArr ? '?index=' + indexArr : '';
   window.location.href = "preview.html" + params;
+}
+
+/*
+ * function for merge
+ */
+function handleMerge(option, keyword) {
+  if (emptyKeyword(keyword)){
+    return;
+  }
+  var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
+  chrome.tabs.create({"url": url, "selected": true});
 }
