@@ -3,8 +3,8 @@ var options = {
   'open': ['url', 'saved'],
   'close': ['url', 'title'],
   'order': ['time', 'name'],
-  'window': ['url', 'title'],
-  'suspend': ['older', 'url', 'title'] // how to indicate all tabs?
+  'window': ['all', 'url', 'title'],
+  'suspend': ['older','all', 'url', 'title'] // how to indicate all tabs?
 };
 
 /*
@@ -72,6 +72,31 @@ function commandSubmit() {
 function handleSuspend(option, keyword){
   if(option === 'older'){
   //TODO: develop 'older' option
+    var background = chrome.extension.getBackgroundPage();
+    var currWindowId = undefined;
+    chrome.tabs.query({"currentWindow": true, "active": true}, function(tabs){
+      if(tabs.length == 0){
+        alert('current tab is empty');
+      } else {
+        currWindowId = tabs[0].windowId;
+        console.log('current window id: ' + currWindowId);
+      }
+      var currTabs = background.windows_collection[currWindowId.valueOf()];
+      var criteria = Date.now() - keyword.valueOf() * 60 * 1000;
+      console.log('criteria: ' + criteria);
+      console.log('currTabs: ' + JSON.stringify(currTabs, null, 2));
+      for(var tabid in currTabs){
+        console.log('tabid: ' + tabid.valueOf() + ', value: ' + currTabs[tabid.valueOf()]);
+        if(currTabs[tabid] < criteria){
+          chrome.tabs.discard(parseInt(tabid), function(tab){
+            console.log('tab with id ' + tab.id + 'has been discarded.');
+         });
+        }
+
+      }
+    });
+    
+
   }
   else if(option === 'url'){
     var lowercase_keyword = keyword.toLowerCase();
