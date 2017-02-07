@@ -3,19 +3,23 @@ $(function () {
   var tabDiv = $('.tab');
   tabDiv.remove();
 
+  var indexList = getParameterByName('index');
+
   chrome.tabs.query({"currentWindow": true}, function (tabs) {
     for (var i = 0; i < tabs.length; i++) {
-      var tabInfo = tabDiv.clone();
-      tabInfo.find('.title').text(tabs[i].title);
-      tabInfo.find('.url').text(tabs[i].url);
+      if(indexList.includes(i) || indexList.length == 0) {
+        var tabInfo = tabDiv.clone();
+        tabInfo.find('.title').text(tabs[i].title);
+        tabInfo.find('.url').text(tabs[i].url);
 
-      if(tabs[i].highlighted) {
-        tabInfo.addClass('active');
+        if(tabs[i].highlighted) {
+          tabInfo.addClass('active');
+        }
+
+        tabList.append(tabInfo);
+
+        clickListener(tabInfo, tabs[i].id);
       }
-
-      tabList.append(tabInfo);
-
-      clickListener(tabInfo, tabs[i].id);
     }
   });
 
@@ -41,3 +45,14 @@ $(function () {
     });
   }
 });
+
+function getParameterByName(name) {
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+
+  if (results === null) {
+    return []
+  } else {
+    return results[1].replace(/\+/g, " ").split(',').map(Number);
+  }
+}
