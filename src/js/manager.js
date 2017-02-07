@@ -12,7 +12,7 @@ var options = {
   'order': ['time', 'name'],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
   'save': [CONST_ALL, CONST_URL, CONST_TITLE, CONST_VIEW],
-  'preview': [CONST_ALL]
+  'preview': [CONST_ALL],
   'suspend': ['older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
 /*
