@@ -3,6 +3,7 @@ var CONST_URL = 'url';
 var CONST_TITLE = 'title';
 var CONST_SAVED = 'saved';
 var CONST_ALL = 'all';
+var CONST_VIEW = 'view';
 // This is const variable. Always only append action is allowed.
 var options = {
   'search': [CONST_URL, CONST_TITLE],
@@ -10,6 +11,7 @@ var options = {
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': ['time', 'name'],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
+  'save': [CONST_ALL, CONST_URL, CONST_TITLE, CONST_VIEW],
   'preview': [CONST_ALL]
 };
 /*
@@ -60,8 +62,12 @@ function commandSubmit() {
     case 'window':
       handleWindow(option, keyword);
       break;
+    case 'save':
+      handleSave(option, keyword);
+      break;
     case 'preview':
       handlePreview();
+      break;
   }
 }
 
@@ -84,8 +90,18 @@ function handleOpen(option, keyword) {
       keyword = 'http://' + keyword;
     }
     chrome.tabs.create({"url": keyword, "selected": true});
-  } else if (option === CONST_SAVED) {
-    //todo need 'save' function
+  } else if (option === CONST_SAVED){
+    var value = localStorage.getItem(keyword);
+    if(value != null){
+
+      var savedURL = JSON.parse(value);
+      for(i in savedURL.URL){
+        chrome.tabs.create({"url":savedURL.URL[i], "selected": true});
+      }
+    }
+    else{
+      $('#error-message').text('no matched savelist');
+    }
   }
 }
 function handleClose(option, keyword) {
@@ -240,4 +256,70 @@ function handleSearch(option, keyword) {
 function handlePreview(indexArr) {
   var params = indexArr ? '?index=' + indexArr : '';
   window.location.href = "preview.html" + params;
+}
+/*
+ * function for search
+ */
+function handleSave(option, keyword) {
+  if (option == CONST_ALL) {
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      var saveListURL = { "URL": []};
+      for(var i = 0; i < tabs.length; i++){
+        saveListURL.URL.push(tabs[i].url);
+      }
+      saveUrlToLocalStorage(saveListURL);
+    });
+  } else if (option == CONST_URL){
+    if (emptyKeyword(keyword)){
+      return;
+    }
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      var saveListURL = { "URL": []};
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].url.indexOf(keyword) > -1) {
+          saveListURL.URL.push(tabs[i].url);
+        }
+      }
+      saveUrlToLocalStorage(saveListURL);
+    });
+  } else if (option == CONST_TITLE){
+    if (emptyKeyword(keyword)){
+      return;
+    }
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      var saveListURL = { "URL": []};
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].title.indexOf(keyword) > -1) {
+          saveListURL.URL.push(tabs[i].url);
+        }
+      }
+      saveUrlToLocalStorage(saveListURL);
+    });
+  } else if (option == CONST_VIEW){
+    /*임시로...*/
+    var viewlist = '';
+    for(var i = 0; i < localStorage.length; i++){
+      viewlist += localStorage.key(i) + '\n';
+    }
+    alert(viewlist);
+
+    if(keyword === 'delete'){
+      localStorage.clear();
+    }
+  }
+}
+
+function saveUrlToLocalStorage(saveListURL){
+  if (saveListURL.URL.length != 0) {
+    var saveListName = prompt("Please enter name for save list", "NewList");
+    if(localStorage.getItem(saveListName) != null){
+      alert("Already Exist! Please enter another name.");
+      return;
+    }else{
+      localStorage.setItem(saveListName, JSON.stringify(saveListURL));
+      //alert(JSON.stringify(saveListURL));
+    }
+  } else {
+    $('#error-message').text('no matched tabs');
+  }
 }
