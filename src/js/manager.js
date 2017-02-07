@@ -142,6 +142,23 @@ function handleSuspend(option, keyword){
 function handleOrder(option, keyword){
 	if(option === 'time'){
 	 //TODO: develop time option 
+    var background = chrome.extension.getBackgroundPage();
+    var currWindowId = undefined;
+    chrome.tabs.query({"currentWindow": true, "active": true}, function(tabs){
+      if(tabs.length == 0){
+        alert('current tab is empty');
+      } else {
+        currWindowId = tabs[0].windowId;
+        console.log('current window id: ' + currWindowId);
+      }
+      var currTabs = background.windows_collection[currWindowId.valueOf()];
+      console.log('currTabs: ' + JSON.stringify(currTabs, null, 2));
+
+      for(var tabid in currTabs){
+        console.log('tabid: ' + tabid.valueOf() + ', value: ' + currTabs[tabid.valueOf()]);
+        //TODO: move tabs 
+      }
+    });
   }
 	else if(option === 'name'){
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
