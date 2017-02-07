@@ -247,18 +247,11 @@ function handleSearch(option, keyword) {
 function handleSave(option, keyword) {
   if (option == CONST_ALL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
-
-      var saveListName = prompt("Please enter name for save list", "NewList");
-      if(localStorage.getItem(saveListName) != null){
-        alert("Already Exist! Please enter another name.");
-        return;
-      }
-
       var saveListURL = { "URL": []};
       for(var i = 0; i < tabs.length; i++){
         saveListURL.URL.push(tabs[i].url);
       }
-      localStorage.setItem(saveListName, JSON.stringify(saveListURL));
+      saveUrlToLocalStorage(saveListURL);
     });
   } else if (option == CONST_URL){
     if (emptyKeyword(keyword)){
@@ -271,18 +264,7 @@ function handleSave(option, keyword) {
           saveListURL.URL.push(tabs[i].url);
         }
       }
-      if (saveListURL.URL.length != 0) {
-        var saveListName = prompt("Please enter name for save list", "NewList");
-        if(localStorage.getItem(saveListName) != null){
-          alert("Already Exist! Please enter another name.");
-          return;
-        }else{
-          localStorage.setItem(saveListName, JSON.stringify(saveListURL));
-          //alert(JSON.stringify(saveListURL));
-        }
-      } else {
-        $('#error-message').text('no matched tabs');
-      }
+      saveUrlToLocalStorage(saveListURL);
     });
   } else if (option == CONST_TITLE){
     if (emptyKeyword(keyword)){
@@ -295,18 +277,7 @@ function handleSave(option, keyword) {
           saveListURL.URL.push(tabs[i].url);
         }
       }
-      if (saveListURL.URL.length != 0) {
-        var saveListName = prompt("Please enter name for save list", "NewList");
-        if(localStorage.getItem(saveListName) != null){
-          alert("Already Exist! Please enter another name.");
-          return;
-        }
-        else{
-          localStorage.setItem(saveListName, JSON.stringify(saveListURL));
-        }
-      } else {
-        $('#error-message').text('no matched tabs');
-      }
+      saveUrlToLocalStorage(saveListURL);
     });
   } else if (option == CONST_VIEW){
     /*임시로...*/
@@ -319,5 +290,20 @@ function handleSave(option, keyword) {
     if(keyword === 'delete'){
       localStorage.clear();
     }
+  }
+}
+
+function saveUrlToLocalStorage(saveListURL){
+  if (saveListURL.URL.length != 0) {
+    var saveListName = prompt("Please enter name for save list", "NewList");
+    if(localStorage.getItem(saveListName) != null){
+      alert("Already Exist! Please enter another name.");
+      return;
+    }else{
+      localStorage.setItem(saveListName, JSON.stringify(saveListURL));
+      //alert(JSON.stringify(saveListURL));
+    }
+  } else {
+    $('#error-message').text('no matched tabs');
   }
 }
