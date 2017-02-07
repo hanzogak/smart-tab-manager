@@ -11,7 +11,8 @@ var options = {
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': ['time', 'name'],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'save': [CONST_ALL, CONST_URL, CONST_TITLE, CONST_VIEW]
+  'save': [CONST_ALL, CONST_URL, CONST_TITLE, CONST_VIEW],
+  'preview': [CONST_ALL]
 };
 /*
  * function that start with dom starting
@@ -63,6 +64,9 @@ function commandSubmit() {
       break;
     case 'save':
       handleSave(option, keyword);
+      break;
+    case 'preview':
+      handlePreview();
       break;
   }
 }
@@ -219,27 +223,39 @@ function handleSearch(option, keyword) {
   if (emptyKeyword(keyword)){
     return;
   }
-  if (option == CONST_URL) {
-    chrome.tabs.query({currentWindow: true}, function (tabList) {
+  var tabsIndex = [];
+
+  chrome.tabs.query({currentWindow: true}, function (tabList) {
+    if (option == CONST_URL) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].url.includes(keyword)) {
-          chrome.tabs.highlight({'tabs': i});
-          return;
+          tabsIndex.push(i);
         }
       }
-      $('#error-message').text('no matched tabs');
-    });
-  } else if (option == CONST_TITLE) {
-    chrome.tabs.query({currentWindow: true}, function (tabList) {
+    } else if (option == CONST_TITLE) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].title.includes(keyword)) {
-          chrome.tabs.highlight({'tabs': i});
-          return;
+          tabsIndex.push(i);
         }
       }
+    }
+
+    if (tabsIndex.length == 1) {
+      chrome.tabs.highlight({'tabs': tabsIndex});
+    } else if (tabsIndex.length == 0) {
       $('#error-message').text('no matched tabs');
-    });
-  }
+    } else {
+      handlePreview(tabsIndex);
+    }
+  });
+}
+
+/*
+ * function for preview
+ */
+function handlePreview(indexArr) {
+  var params = indexArr ? '?index=' + indexArr : '';
+  window.location.href = "preview.html" + params;
 }
 /*
  * function for search
