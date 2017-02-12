@@ -20,6 +20,7 @@ var options = {
  */
 $(function () {
   $('#command').change(changeOption).change();
+  $('#option').change(autocomplete);
   // click submit button
   $('#command-submit').click(commandSubmit);
   // enter keyboard in keyword input
@@ -39,6 +40,7 @@ function changeOption() {
   for (var i = 0; i < options[command].length; i++) {
     option.append(new Option('-' + options[command][i], options[command][i]));
   }
+  autocomplete();
 }
 /*
  * function for command submit
@@ -425,5 +427,48 @@ function saveUrlToLocalStorage(saveListURL){
     }
   } else {
     $('#error-message').text('no matched tabs');
+  }
+}
+
+/*
+ * function for auto complete keyword input box
+ */
+function autocomplete(){
+  var command = $('#command').val();
+  var option = $('#option').val();
+  $('#keyword').autocomplete();
+  if(command == 'open' && option == CONST_SAVED){
+
+    var openSaveSource = [];
+    for(var i = 0; i < localStorage.length; i++){
+      openSaveSource.push(localStorage.key(i));
+    }
+
+    $( '#keyword' ).autocomplete({
+      source : openSaveSource,
+      minLength : 0,
+      position: { my : "right top", at: "right bottom", collision : "fit"},
+    }).on("focus", function(){
+      $(this).autocomplete("search", '');
+    });
+  } else if(command == 'search' && option == CONST_TITLE){
+
+    var openSaveSource = [];
+
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      for(var i=0; i<tabs.length; i++){
+        openSaveSource.push(tabs[i].title);
+      }
+    });
+
+    $( '#keyword' ).autocomplete({
+      source : openSaveSource,
+      minLength : 0,
+      position: { my : "right top", at: "right bottom", collision : "fit"},
+    }).on("focus", function(){
+      $(this).autocomplete("search", '');
+    });
+  } else {
+    $('#keyword').autocomplete("destroy");
   }
 }
