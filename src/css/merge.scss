@@ -7,6 +7,12 @@ $warm-gray: #757575;
 $white-two: #dcdcdc;
 $white-four: #eeeeee;
 
+.side-bar {
+  width: 30%;
+  background-color: $warm-gray;
+  color: white;
+}
+
 #tab-list {
   border-radius: 4px;
   overflow: hidden;

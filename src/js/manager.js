@@ -182,6 +182,7 @@ function handleOrder(option, keyword){
 
     });
 	}
+
 }
 
 function emptyKeyword(keyword){
@@ -367,6 +368,14 @@ function handleSearch(option, keyword) {
 }
 
 /*
+ * function for preview
+ */
+function handlePreview(indexArr) {
+  var params = indexArr ? '?index=' + indexArr : '';
+  window.location.href = "preview.html" + params;
+}
+
+/*
  * function for search
  */
 function handleSave(option, keyword) {
@@ -421,26 +430,18 @@ function handleSave(option, keyword) {
 function saveUrlToLocalStorage(saveListURL) {
   if (saveListURL.URL.length != 0) {
     var saveListName = prompt("Please enter name for save list", "NewList");
-    if(localStorage.getItem(saveListName) != null){
+    if (localStorage.getItem(saveListName) != null) {
       alert("Already Exist! Please enter another name.");
       return;
-    } else{
+    }
+    else {
       localStorage.setItem(saveListName, JSON.stringify(saveListURL));
       //alert(JSON.stringify(saveListURL));
     }
-  } else {
+  }
+  else {
     $('#error-message').text('no matched tabs');
   }
-  var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
-  chrome.tabs.create({"url": url, "selected": true});
-}
-
-/*
- * function for preview
- */
-function handlePreview(indexArr) {
-  var params = indexArr ? '?index=' + indexArr : '';
-  window.location.href = "preview.html" + params;
 }
 
 /*
@@ -450,4 +451,6 @@ function handleMerge(option, keyword) {
   if (emptyKeyword(keyword)) {
     return;
   }
+  var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
+  chrome.tabs.create({"url": url, "selected": true});
 }

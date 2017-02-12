@@ -10,19 +10,29 @@ $(function () {
   var option = getParameterByName('option');
   var keyword = getParameterByName('keyword');
 
+  $('#keyword').text(keyword);
+  $('#option').text(option);
+
   tabDiv.remove();
+
+  var currentId;
+  chrome.tabs.getCurrent(function (tab) {
+    currentId = tab.id
+  });
 
   chrome.tabs.query({"currentWindow": true}, function (tabs) {
     if (option == CONST_URL) {
       for (var i = 0; i < tabs.length; i++) {
-        if(tabs[i].url.includes(keyword)) {
+        if(tabs[i].url.includes(keyword) && tabs[i].id != currentId) {
           addNewTab(tabs[i]);
+          chrome.tabs.remove(tabs[i].id);
         }
       }
     } else if (option == CONST_TITLE) {
       for (var i = 0; i < tabs.length; i++) {
-        if(tabs[i].title.includes(keyword)) {
+        if(tabs[i].title.includes(keyword) && tabs[i].id != currentId) {
           addNewTab(tabs[i]);
+          chrome.tabs.remove(tabs[i].id);
         }
       }
     }
@@ -61,4 +71,14 @@ $(function () {
 
     clickListener(newTabDiv, tabInfo.id);
   }
+
+  $('#separate').click(function() {
+    $('.tab').find('.url').each(function() {
+      console.log('hi');
+      chrome.tabs.create({"url":$(this).text(), "selected": false});
+    });
+
+    chrome.tabs.remove(currentId);
+  });
+
 });
