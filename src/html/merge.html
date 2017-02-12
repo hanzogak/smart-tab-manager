@@ -4,28 +4,31 @@
 <meta charset="UTF-8"/>
 
 <link rel="stylesheet" href="../css/defaults.css">
-<link rel="stylesheet" href="../css/merge.css">
+<link rel="stylesheet" href="../css/dashboard.css">
 
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script type="text/javascript" src="../js/merge.js"></script>
 <script type="text/javascript" src="../js/manager.js"></script>
 
 <body>
-<div class="side-bar">
-  <div id="merged-title">Smart Tab Manager</div>
+
+<div id="left-side">
+  <div class="logo">Smart Tab Manager</div>
+  <div class="merge-info">Merge <span id="keyword"></span> <span id="option"></span></div>
 </div>
 
-<div class="merged-info">Merge <span id="keyword"></span> in tab's <span id="option"></span></div>
-<button id="separate">SEPARATE</button>
-
-<div id="tab-list">
-  <div class="tab">
-    <div class="delete"></div>
-    <div class="title"></div>
-    <div class="url"></div>
-    <!--<img class="screen" src="../../resources/icon.png" height="100">-->
+<div id="right-side">
+  <button id="separate">SEPARATE</button>
+  <div id="tab-list">
+    <div class="tab">
+      <div class="delete"></div>
+      <div class="title"></div>
+      <div class="url"></div>
+      <!--<img class="screen" src="../../resources/icon.png" height="100">-->
+    </div>
   </div>
 </div>
+
 </body>
 
 </html>

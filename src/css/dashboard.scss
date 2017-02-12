@@ -1,16 +1,70 @@
 $deep_yellow: #FFBF00;
-$dark_gray: #424242;
+$dark_gray: #323232;
 $light_gray: #dcdcdc;
 $error_red: #EE5757;
 $pinkish-gray: #bdbdbd;
 $warm-gray: #757575;
 $white-two: #dcdcdc;
 $white-four: #eeeeee;
+$dark: #282727;
+$gold: #b99458;
 
-.side-bar {
-  width: 30%;
-  background-color: $warm-gray;
-  color: white;
+html, body {
+  height: 100%;
+}
+
+#left-side {
+  float: left;
+  padding: 20px;
+  max-width: 300px;
+  width: 30vw;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: $dark;
+  font-family: SimplonBold;
+
+  > .logo {
+    font-size: 18px;
+    font-weight: bold;
+    color: $gold;
+  }
+
+  > .merge-info {
+    clear: both;
+    font-size: 24px;
+    color: white;
+  }
+
+  .side-bar {
+    width: 30%;
+    color: white;
+  }
+}
+
+#right-side {
+  float: left;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 70vw;
+  height: 100vh;
+}
+
+#separate {
+  margin: 5px 1.5%;
+  border: 1px solid $gold;
+  border-radius: 3px;
+  background-color: white;
+
+  font-size: 16px;
+  line-height: 20px;
+  color: $gold;
+  cursor: pointer;
+
+  &:hover {
+    transition: background-color .5s ease-out;
+    background-color: $gold;
+    color: white;
+  }
 }
 
 #tab-list {
@@ -44,7 +98,8 @@ $white-four: #eeeeee;
       padding: 0 8px;
       height: 30px;
       line-height: 30px;
-      background-color: $pinkish-gray;
+      background-color: $dark_gray;
+      color: white;
 
       font-size: 16px;
       overflow: hidden;

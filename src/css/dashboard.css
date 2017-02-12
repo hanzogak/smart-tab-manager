@@ -1,7 +1,47 @@
-.side-bar {
-  width: 30%;
-  background-color: #757575;
-  color: white; }
+html, body {
+  height: 100%; }
+
+#left-side {
+  float: left;
+  padding: 20px;
+  max-width: 300px;
+  width: 30vw;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: #282727;
+  font-family: SimplonBold; }
+  #left-side > .logo {
+    font-size: 18px;
+    font-weight: bold;
+    color: #b99458; }
+  #left-side > .merge-info {
+    clear: both;
+    font-size: 24px;
+    color: white; }
+  #left-side .side-bar {
+    width: 30%;
+    color: white; }
+
+#right-side {
+  float: left;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 70vw;
+  height: 100vh; }
+
+#separate {
+  margin: 5px 1.5%;
+  border: 1px solid #b99458;
+  border-radius: 3px;
+  background-color: white;
+  font-size: 16px;
+  line-height: 20px;
+  color: #b99458;
+  cursor: pointer; }
+  #separate:hover {
+    transition: background-color .5s ease-out;
+    background-color: #b99458;
+    color: white; }
 
 #tab-list {
   border-radius: 4px;
@@ -27,7 +67,8 @@
       padding: 0 8px;
       height: 30px;
       line-height: 30px;
-      background-color: #bdbdbd;
+      background-color: #323232;
+      color: white;
       font-size: 16px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -48,4 +89,4 @@
       #tab-list > .tab:hover > .delete {
         display: block; }
 
-/*# sourceMappingURL=merge.css.map */
+/*# sourceMappingURL=dashboard.css.map */
