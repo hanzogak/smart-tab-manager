@@ -28,5 +28,24 @@
         "src/js/manager.js"
       ]
     }
-  ]
+  ],
+  "commands": {
+    "show_command_box": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "windows": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "show command box"
+    },
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "windows": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S",
+        "chromeos": "Ctrl+Shift+S",
+        "linux": "Ctrl+Shift+S"
+      }
+    }
+  }
 }

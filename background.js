@@ -44,3 +44,15 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo){
   removeFromCollection(removeInfo.windowId, tabId); 
 });
+
+chrome.commands.onCommand.addListener(function(command) {
+  if(command == 'show_command_box'){
+   alert('단축키가 눌렸어요!');
+    chrome.tabs.executeScript({
+      file: 'src/js/jquery.min.js'
+    });
+   chrome.tabs.executeScript({
+     file: 'src/js/command_box.js'
+    });
+  }
+});

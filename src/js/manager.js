@@ -414,7 +414,6 @@ function saveUrlToLocalStorage(saveListURL){
       return;
     }else{
       localStorage.setItem(saveListName, JSON.stringify(saveListURL));
-      //alert(JSON.stringify(saveListURL));
     }
   } else {
     $('#error-message').text('no matched tabs');
