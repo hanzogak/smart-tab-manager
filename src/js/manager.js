@@ -4,12 +4,13 @@ var CONST_TITLE = 'title';
 var CONST_SAVED = 'saved';
 var CONST_ALL = 'all';
 var CONST_VIEW = 'view';
+var CONST_TIME = 'time';
 // This is const variable. Always only append action is allowed.
 var options = {
   'search': [CONST_URL, CONST_TITLE],
   'open': [CONST_URL, CONST_SAVED],
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'order': ['time', 'name'],
+  'order': [CONST_TIME, CONST_TITLE],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
   'save': [CONST_ALL, CONST_URL, CONST_TITLE, CONST_VIEW],
   'preview': [CONST_ALL],
@@ -20,7 +21,7 @@ var options = {
  */
 $(function () {
   $('#command').change(changeOption).change();
-  $('#option').change(autocomplete);
+  $('#option').change(autocomplete, showKeywordBox);
   // click submit button
   $('#command-submit').click(commandSubmit);
   // enter keyboard in keyword input
@@ -41,6 +42,7 @@ function changeOption() {
     option.append(new Option('-' + options[command][i], options[command][i]));
   }
   autocomplete();
+  showKeywordBox();
 }
 /*
  * function for command submit
@@ -470,5 +472,19 @@ function autocomplete(){
     });
   } else {
     $('#keyword').autocomplete("destroy");
+  }
+}
+
+function showKeywordBox(){
+  var command = $('#command').val();
+  var option = $('#option').val();
+  if(command == 'order' && option == CONST_TIME){
+    $('#keyword').hide();
+  }
+  else if(command == 'save' && option == CONST_ALL){
+    $('#keyword').hide();
+  }
+  else{
+    $('#keyword').show();
   }
 }
