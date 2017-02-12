@@ -403,17 +403,6 @@ function handleSave(option, keyword) {
       }
       saveUrlToLocalStorage(saveListURL);
     });
-  } else if (option == CONST_VIEW){
-    /*임시로...*/
-    var viewlist = '';
-    for(var i = 0; i < localStorage.length; i++){
-      viewlist += localStorage.key(i) + '\n';
-    }
-    alert(viewlist);
-
-    if(keyword === 'delete'){
-      localStorage.clear();
-    }
   }
 }
 
