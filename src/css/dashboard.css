@@ -14,10 +14,11 @@ html, body {
     font-size: 18px;
     font-weight: bold;
     color: #b99458; }
-  #left-side > .merge-info {
+  #left-side > .merge-info, #left-side .list-name {
     clear: both;
     font-size: 24px;
-    color: white; }
+    color: white;
+    cursor: pointer; }
   #left-side .side-bar {
     width: 30%;
     color: white; }
@@ -45,7 +46,8 @@ html, body {
 
 #tab-list {
   border-radius: 4px;
-  overflow: hidden; }
+  height: 90%;
+  overflow: scroll; }
   #tab-list > .tab {
     position: relative;
     float: left;
@@ -75,7 +77,7 @@ html, body {
       white-space: pre; }
     #tab-list > .tab > .url {
       padding: 8px;
-      height: 60px;
+      height: 90px;
       line-height: 11px;
       background-color: #eeeeee;
       font-size: 8px;

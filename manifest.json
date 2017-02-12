@@ -12,6 +12,9 @@
     "default_popup": "src/html/manager.html"
   },
   "omnibox": { "keyword" : "tabby" },
+  "chrome_url_overrides" : {
+    "newtab": "src/html/dashboard.html"
+  },
   "icons": {
     "128": "resources/hanzo_128.png"
   },
