@@ -32,6 +32,9 @@
       ]
     }
   ],
+  "web_accessible_resources": [
+    "src/html/command_box.html"
+  ],
   "commands": {
     "show_command_box": {
       "suggested_key": {
