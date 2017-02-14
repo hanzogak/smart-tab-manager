@@ -1,6 +1,7 @@
 body {
   margin: 20px;
   width: 400px;
+  height: 200px;
   color: #424242; }
   body div {
     margin-bottom: 10px; }
@@ -38,3 +39,17 @@ button {
   cursor: pointer; }
 
 /*# sourceMappingURL=manager.css.map */
+
+.ui-autocomplete {
+  max-height: 100px;
+  max-width : 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ui-autocomplete>li {
+  font-size: 15px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: pre;
+}
