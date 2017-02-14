@@ -1,7 +1,5 @@
 var CONST_URL = 'url';
 var CONST_TITLE = 'title';
-var CONST_SAVED = 'saved';
-var CONST_ALL = 'all';
 
 $(function () {
   var tabList = $('#tab-list');
@@ -12,6 +10,7 @@ $(function () {
 
   $('#keyword').text(keyword);
   $('#option').text(option);
+  document.title = keyword;
 
   tabDiv.remove();
 
@@ -37,13 +36,6 @@ $(function () {
       }
     }
   });
-
-  function getParameterByName(name) {
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(location.search);
-
-    return results === null ? null : results[1].replace(/\+/g, " ");
-  }
 
   function clickListener(tabInfo, tabId) {
     tabInfo.click(function(e) {
@@ -72,13 +64,18 @@ $(function () {
     clickListener(newTabDiv, tabInfo.id);
   }
 
+  function getParameterByName(name) {
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location.search);
+
+    return results === null ? null : results[1].replace(/\+/g, " ");
+  }
+
   $('#separate').click(function() {
     $('.tab').find('.url').each(function() {
-      console.log('hi');
       chrome.tabs.create({"url":$(this).text(), "selected": false});
     });
 
     chrome.tabs.remove(currentId);
   });
-
 });

@@ -8,17 +8,7 @@ $(function () {
   chrome.tabs.query({"currentWindow": true}, function (tabs) {
     for (var i = 0; i < tabs.length; i++) {
       if(indexList.includes(i) || indexList.length == 0) {
-        var tabInfo = tabDiv.clone();
-        tabInfo.find('.title').text(tabs[i].title);
-        tabInfo.find('.url').text(tabs[i].url);
-
-        if(tabs[i].highlighted) {
-          tabInfo.addClass('active');
-        }
-
-        tabList.append(tabInfo);
-
-        clickListener(tabInfo, tabs[i].id);
+        addNewTab(tabs[i]);
       }
     }
   });
@@ -36,23 +26,28 @@ $(function () {
     });
   }
 
-  // TODO
-  function captureTabScreen(tabId, screenImg) {
-    chrome.tabs.onActivated.addListener(function () {
-      chrome.tabs.captureVisibleTab(function (capturedUrl) {
-        screenImg.attr('src', capturedUrl);
-      })
-    });
+  function addNewTab(tabInfo) {
+    var newTabDiv = tabDiv.clone();
+    newTabDiv.find('.title').text(tabInfo.title);
+    newTabDiv.find('.url').text(tabInfo.url);
+
+    if(tabInfo.highlighted) {
+      newTabDiv.addClass('active');
+    }
+
+    tabList.append(newTabDiv);
+
+    clickListener(newTabDiv, tabInfo.id);
+  }
+
+  function getParameterByName(name) {
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location.search);
+
+    if (results === null) {
+      return []
+    } else {
+      return results[1].replace(/\+/g, " ").split(',').map(Number);
+    }
   }
 });
-
-function getParameterByName(name) {
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-    results = regex.exec(location.search);
-
-  if (results === null) {
-    return []
-  } else {
-    return results[1].replace(/\+/g, " ").split(',').map(Number);
-  }
-}
