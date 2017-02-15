@@ -1,17 +1,27 @@
-$(function () {
+$(function() {
   var tabList = $('#tab-list');
   var tabDiv = $('.tab');
   tabDiv.remove();
 
-  var indexList = getParameterByName('index');
+  var listNameDiv = $('.list-name');
 
-  chrome.tabs.query({"currentWindow": true}, function (tabs) {
-    for (var i = 0; i < tabs.length; i++) {
-      if(indexList.includes(i) || indexList.length == 0) {
-        addNewTab(tabs[i]);
+  for(var i = 0; i < localStorage.length; i++){
+    var listNameClone = listNameDiv.clone();
+    listNameClone.text(localStorage.key(i));
+    $('#left-side').append(listNameClone);
+
+    listClickListener(listNameClone);
+  }
+
+  function listClickListener(tabListName) {
+    tabListName.click(function(e) {
+      tabList.empty();
+      var savedTab = JSON.parse(localStorage.getItem(tabListName.text()));
+      for(i in savedTab){
+        addNewTab(savedTab[i]);
       }
-    }
-  });
+    });
+  }
 
   function clickListener(tabInfo, tabId) {
     tabInfo.click(function(e) {
@@ -38,16 +48,5 @@ $(function () {
     tabList.append(newTabDiv);
 
     clickListener(newTabDiv, tabInfo.id);
-  }
-
-  function getParameterByName(name) {
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(location.search);
-
-    if (results === null) {
-      return []
-    } else {
-      return results[1].replace(/\+/g, " ").split(',').map(Number);
-    }
   }
 });

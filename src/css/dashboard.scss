@@ -1,0 +1,138 @@
+$deep_yellow: #FFBF00;
+$dark_gray: #323232;
+$light_gray: #dcdcdc;
+$error_red: #EE5757;
+$pinkish-gray: #bdbdbd;
+$warm-gray: #757575;
+$white-two: #dcdcdc;
+$white-four: #eeeeee;
+$dark: #282727;
+$gold: #b99458;
+
+html, body {
+  height: 100%;
+}
+
+#left-side {
+  float: left;
+  padding: 20px;
+  max-width: 300px;
+  width: 30vw;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: $dark;
+  font-family: SimplonBold;
+
+  > .logo {
+    font-size: 18px;
+    font-weight: bold;
+    color: $gold;
+  }
+
+  > .merge-info, .list-name {
+    clear: both;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+  }
+
+  .side-bar {
+    width: 30%;
+    color: white;
+  }
+}
+
+#right-side {
+  float: left;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 70vw;
+  height: 100vh;
+}
+
+#separate {
+  margin: 5px 1.5%;
+  border: 1px solid $gold;
+  border-radius: 3px;
+  background-color: white;
+
+  font-size: 16px;
+  line-height: 20px;
+  color: $gold;
+  cursor: pointer;
+
+  &:hover {
+    transition: background-color .5s ease-out;
+    background-color: $gold;
+    color: white;
+  }
+}
+
+#tab-list {
+  border-radius: 4px;
+  height: 90%;
+  overflow: scroll;
+
+  > .tab {
+    position: relative;
+    float: left;
+    margin: 5px 1.5%;
+    width: 30%;
+    cursor: pointer;
+
+    > .delete {
+      display: none;
+      position: absolute;
+      top: -7px;
+      right: -7px;
+
+      width: 20px;
+      height: 20px;
+      background: {
+        image: url('../../resources/delete.png');
+        repeat: no-repeat;
+        size: 20px;
+      }
+      cursor: pointer;
+    }
+
+    > .title {
+      padding: 0 8px;
+      height: 30px;
+      line-height: 30px;
+      background-color: $dark_gray;
+      color: white;
+
+      font-size: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: pre;
+    }
+
+    > .url {
+      padding: 8px;
+      height: 90px;
+      line-height: 11px;
+      background-color: $white-four;
+
+      font-size: 8px;
+      overflow: hidden;
+    }
+
+    &.active {
+      > .title {
+        background-color: $deep_yellow;
+        color: white;
+      }
+    }
+
+    &:hover {
+      transition: box-shadow .3s ease-out;
+      box-shadow : 0 0 10px;
+
+      > .delete {
+        display: block;
+      }
+    }
+  }
+}

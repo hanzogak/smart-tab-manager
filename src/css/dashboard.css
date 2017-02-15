@@ -1,0 +1,94 @@
+html, body {
+  height: 100%; }
+
+#left-side {
+  float: left;
+  padding: 20px;
+  max-width: 300px;
+  width: 30vw;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: #282727;
+  font-family: SimplonBold; }
+  #left-side > .logo {
+    font-size: 18px;
+    font-weight: bold;
+    color: #b99458; }
+  #left-side > .merge-info, #left-side .list-name {
+    clear: both;
+    font-size: 24px;
+    color: white;
+    cursor: pointer; }
+  #left-side .side-bar {
+    width: 30%;
+    color: white; }
+
+#right-side {
+  float: left;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 70vw;
+  height: 100vh; }
+
+#separate {
+  margin: 5px 1.5%;
+  border: 1px solid #b99458;
+  border-radius: 3px;
+  background-color: white;
+  font-size: 16px;
+  line-height: 20px;
+  color: #b99458;
+  cursor: pointer; }
+  #separate:hover {
+    transition: background-color .5s ease-out;
+    background-color: #b99458;
+    color: white; }
+
+#tab-list {
+  border-radius: 4px;
+  height: 90%;
+  overflow: scroll; }
+  #tab-list > .tab {
+    position: relative;
+    float: left;
+    margin: 5px 1.5%;
+    width: 30%;
+    cursor: pointer; }
+    #tab-list > .tab > .delete {
+      display: none;
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      width: 20px;
+      height: 20px;
+      background-image: url("../../resources/delete.png");
+      background-repeat: no-repeat;
+      background-size: 20px;
+      cursor: pointer; }
+    #tab-list > .tab > .title {
+      padding: 0 8px;
+      height: 30px;
+      line-height: 30px;
+      background-color: #323232;
+      color: white;
+      font-size: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: pre; }
+    #tab-list > .tab > .url {
+      padding: 8px;
+      height: 90px;
+      line-height: 11px;
+      background-color: #eeeeee;
+      font-size: 8px;
+      overflow: hidden; }
+    #tab-list > .tab.active > .title {
+      background-color: #FFBF00;
+      color: white; }
+    #tab-list > .tab:hover {
+      transition: box-shadow .3s ease-out;
+      box-shadow: 0 0 10px; }
+      #tab-list > .tab:hover > .delete {
+        display: block; }
+
+/*# sourceMappingURL=dashboard.css.map */

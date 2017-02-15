@@ -12,6 +12,9 @@
     "default_popup": "src/html/manager.html"
   },
   "omnibox": { "keyword" : "tabby" },
+  "chrome_url_overrides" : {
+    "newtab": "src/html/dashboard.html"
+  },
   "icons": {
     "128": "resources/hanzo_128.png"
   },
@@ -28,5 +31,27 @@
         "src/js/manager.js"
       ]
     }
-  ]
+  ],
+  "web_accessible_resources": [
+    "src/html/command_box.html"
+  ],
+  "commands": {
+    "show_command_box": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "windows": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "show command box"
+    },
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "windows": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S",
+        "chromeos": "Ctrl+Shift+S",
+        "linux": "Ctrl+Shift+S"
+      }
+    }
+  }
 }

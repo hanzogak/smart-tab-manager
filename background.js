@@ -44,3 +44,17 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo){
   removeFromCollection(removeInfo.windowId, tabId); 
 });
+
+chrome.commands.onCommand.addListener(function(command) {
+  if(command == 'show_command_box'){
+    chrome.tabs.executeScript({
+      file: 'src/js/jquery.min.js'
+    });
+   chrome.tabs.executeScript({
+     file: 'src/js/command_box.js'
+    });
+    chrome.tabs.insertCSS({
+      file: 'src/css/command_box.css'
+    });
+  }
+});
