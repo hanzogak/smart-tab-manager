@@ -1,52 +1,54 @@
-$(function() {
+function updateTabList() {
   var tabList = $('#tab-list');
-  var tabDiv = $('.tab');
-  tabDiv.remove();
 
-  var listNameDiv = $('.list-name');
+  chrome.tabs.query({"currentWindow": true}, function (tabs) {
+    tabList.empty();
 
-  for(var i = 0; i < localStorage.length; i++){
-    var listNameClone = listNameDiv.clone();
-    listNameClone.text(localStorage.key(i));
-    $('#left-side').append(listNameClone);
-
-    listClickListener(listNameClone);
-  }
-
-  function listClickListener(tabListName) {
-    tabListName.click(function(e) {
-      tabList.empty();
-      var savedTab = JSON.parse(localStorage.getItem(tabListName.text()));
-      for(i in savedTab){
-        addNewTab(savedTab[i]);
-      }
-    });
-  }
-
-  function clickListener(tabInfo, tabId) {
-    tabInfo.click(function(e) {
-      if(e.target.className == 'delete') {
-        chrome.tabs.remove(tabId, function () {
-          tabInfo.remove();
-        });
-      } else {
-        var index = $('.tab').index(tabInfo);
-        chrome.tabs.highlight({'tabs': index});
-      }
-    });
-  }
-
-  function addNewTab(tabInfo) {
-    var newTabDiv = tabDiv.clone();
-    newTabDiv.find('.title').text(tabInfo.title);
-    newTabDiv.find('.url').text(tabInfo.url);
-
-    if(tabInfo.highlighted) {
-      newTabDiv.addClass('active');
+    for (var i = 0; i < tabs.length; i++) {
+      var newTab = createTabDiv(tabs[i]);
+      tabList.append(newTab);
     }
+  });
+}
 
-    tabList.append(newTabDiv);
+chrome.tabs.onCreated.addListener(function () {
+  updateTabList();
+});
 
-    clickListener(newTabDiv, tabInfo.id);
+chrome.tabs.onHighlighted.addListener(function () {
+  updateTabList();
+});
+
+chrome.tabs.onRemoved.addListener(function () {
+  updateTabList();
+});
+
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
+  if (changeInfo.status == 'complete')
+    updateTabList();
+});
+
+chrome.tabs.onMoved.addListener(function () {
+  updateTabList();
+});
+
+$(function () {
+  var tabList = $('#tab-list');
+
+  for (var i = 0; i < localStorage.length; i++) {
+    var listName = $('.list-name').clone().removeClass('preview');
+    listName.text(localStorage.key(i));
+
+    listName.click(function (e) {
+      tabList.empty();
+      var savedTab = JSON.parse(localStorage.getItem(listName.text()));
+      console.log('savedTab');
+      for (i in savedTab) {
+        var newTab = createTabDiv(savedTab[i]);
+        tabList.append(newTab);
+      }
+    });
+
+    $('#left-side').append(listName);
   }
 });
