@@ -1,53 +1,54 @@
 $(function () {
   var tabList = $('#tab-list');
-  var tabDiv = $('.tab');
-  tabDiv.remove();
-
   var indexList = getParameterByName('index');
 
   chrome.tabs.query({"currentWindow": true}, function (tabs) {
     for (var i = 0; i < tabs.length; i++) {
       if(indexList.includes(i) || indexList.length == 0) {
-        addNewTab(tabs[i]);
+        var newTab = createTabDiv(tabs[i]);
+        tabList.append(newTab);
       }
     }
   });
-
-  function clickListener(tabInfo, tabId) {
-    tabInfo.click(function(e) {
-      if(e.target.className == 'delete') {
-        chrome.tabs.remove(tabId, function () {
-          tabInfo.remove();
-        });
-      } else {
-        var index = $('.tab').index(tabInfo);
-        chrome.tabs.highlight({'tabs': index});
-      }
-    });
-  }
-
-  function addNewTab(tabInfo) {
-    var newTabDiv = tabDiv.clone();
-    newTabDiv.find('.title').text(tabInfo.title);
-    newTabDiv.find('.url').text(tabInfo.url);
-
-    if(tabInfo.highlighted) {
-      newTabDiv.addClass('active');
-    }
-
-    tabList.append(newTabDiv);
-
-    clickListener(newTabDiv, tabInfo.id);
-  }
-
-  function getParameterByName(name) {
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(location.search);
-
-    if (results === null) {
-      return []
-    } else {
-      return results[1].replace(/\+/g, " ").split(',').map(Number);
-    }
-  }
 });
+
+function createTabDiv(tabInfo) {
+  var newTabDiv = $('<div class="tab">' +
+    '<div class="id hide"></div>' +
+    '<div class="delete"></div>' +
+    '<div class="title"></div>' +
+    '<div class="url"></div>' +
+    '</div>');
+
+  newTabDiv.find('.title').text(tabInfo.title);
+  newTabDiv.find('.url').text(tabInfo.url);
+
+  if(tabInfo.highlighted) {
+    newTabDiv.addClass('active');
+  }
+
+  newTabDiv.click(function(e) {
+    if(e.target.className == 'delete') {
+      // tab delete event
+      chrome.tabs.remove(tabInfo.id, function () {
+        newTabDiv.remove();
+      });
+    } else {
+      // tab active event
+      chrome.tabs.update(tabInfo.id, {highlighted: true, active: true});
+    }
+  });
+
+  return newTabDiv;
+}
+
+function getParameterByName(name) {
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+
+  if (results === null) {
+    return []
+  } else {
+    return results[1].replace(/\+/g, " ").split(',').map(Number);
+  }
+}
