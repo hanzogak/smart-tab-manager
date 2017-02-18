@@ -28,6 +28,19 @@ var optionList = {
   'suspend': ['-older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
 
+var saveList;
+window.postMessage({ type: "savelist request" }, "*");
+window.addEventListener("message", function(event) {
+    // We only accept messages from ourselves
+    if (event.source != window){
+        return;
+    }
+    if (event.data.type && (event.data.type == 'savelist answer')) {
+        saveList = event.data.src;
+        console.log(saveList.toString());
+    }
+}, false);
+
 $.ajax({
   url: 'chrome-extension://' + chrome.runtime.id + '/src/html/command_box.html',
   type: 'GET',
@@ -52,9 +65,14 @@ function previewCommand() {
   var word ='';
 
   inputDiv.keyup(function(e){
+
     var val = $(this).val();
     var stage = 0;
     var pre = '';
+
+    if(e.which === 13 && word == ''){
+      window.postMessage({ type: "submit", text: val }, "*");
+    }
 
     //set stage
     while(val.indexOf(' ') > 0 && stage < 2){
@@ -70,20 +88,29 @@ function previewCommand() {
     }
 
     //auto complete
-    if(e.which === 39 && word != ''){  //(->)
-      e.preventDefault();
-      inputDiv.val(word + " ");
-      previewDiv.text(word + " ");
+    if((e.which == 13 || e.which === 39) && word != ''){  //(->)
+      if (stage == 0 || stage == 1){
+          e.preventDefault();
+          inputDiv.val(word + " ");
+          previewDiv.text(word + " ");
+          word = '';
+      } else if (stage == 2){
+          e.preventDefault();
+          inputDiv.val(word);
+          previewDiv.text(word);
+          word = '';
+      }
       return;
     }
 
-    var src;
+    var src = [];
     if(stage == 0) {
       src = commandList;
     } else if (stage == 1) {
       src = optionList[pre.slice(0, pre.length-1)];
     } else if (stage == 2 && pre == 'open -saved '){
-      //TODO : LocalStorage 불러오는 법을 찾아야함
+      src = saveList;
+    } else{
       return;
     }
 

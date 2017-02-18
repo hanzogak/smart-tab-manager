@@ -451,6 +451,14 @@ function saveUrlToLocalStorage(saveList){
       return;
     }else{
       localStorage.setItem(saveListName, JSON.stringify(saveList));
+      chrome.storage.local.get('saveList', function (result) {
+        var KeyForSaveList = [];
+        if(result.saveList != null){
+            KeyForSaveList = result.saveList;
+        }
+        KeyForSaveList.push(saveListName);
+        chrome.storage.local.set({'saveList' : KeyForSaveList});
+      });
     }
   }
   else {
@@ -477,17 +485,14 @@ function autocomplete(){
   var option = $('#option').val();
   $('#keyword').autocomplete();
   if(command == 'open' && option == CONST_SAVED){
-    var openSaveSource = [];
-    for(var i = 0; i < localStorage.length; i++){
-      openSaveSource.push(localStorage.key(i));
-    }
-
-    $( '#keyword' ).autocomplete({
-      source : openSaveSource,
-      minLength : 0,
-      position: { my : "right top", at: "right bottom", collision : "fit"},
-    }).on("focus", function(){
-      $(this).autocomplete("search", '');
+    chrome.storage.local.get('saveList', function (result) {
+      $( '#keyword' ).autocomplete({
+          source : result.saveList,
+          minLength : 0,
+          position: { my : "right top", at: "right bottom", collision : "fit"},
+      }).on("focus", function(){
+          $(this).autocomplete("search", '');
+      });
     });
   } else if(command == 'search' && option == CONST_TITLE){
     var openSaveSource = [];
@@ -523,3 +528,20 @@ function showKeywordBox(){
     $('#keyword').show();
   }
 }
+
+window.addEventListener("message", function(event) {
+  // We only accept messages from ourselves
+  if (event.source != window){
+    return;
+  }
+  if (event.data.type && (event.data.type == 'submit')) {
+    console.log(event.data.text);
+    //TODO : parsing "event.data.text", then call handleFunction.
+  }
+  else if(event.data.type && (event.data.type == 'savelist request')){
+    chrome.storage.local.get('saveList', function (result) {
+        window.postMessage({ type: 'savelist answer', src: result.saveList }, "*");
+    });
+  }
+}, false);
+
