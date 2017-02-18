@@ -17,10 +17,9 @@ $white-four: #eeeeee;
   z-index: 500;
 
   background: rgba(0, 0, 0, 0.3);
-  color: $dark_gray;
-  font-family: SimplonBold;
 
   > #command-box {
+    position: relative;
     margin: 30vh auto;
     padding: 15px 20px;
     width: 60vw;
@@ -28,6 +27,8 @@ $white-four: #eeeeee;
     border-radius: 4px;
     background-color: white;
     box-sizing: border-box;
+    font-family: SimplonBold;
+    color: $dark_gray;
 
     > .icon {
       float: left;
@@ -38,16 +39,31 @@ $white-four: #eeeeee;
       height: 50px;
     }
 
-    > #command {
-      width: calc(100% - 65px);
-      line-height: 50px;
+    #smart-tab-manager-input, #smart-tab-manager-preview {
+      margin: 0;
       padding: 0;
       border: none;
+      box-shadow: none;
+      background-color: transparent;
+
+      position: absolute;
+      top: 15px;
+      right: 15px;
+
+      width: calc(100% - 95px);
+      line-height: 50px;
       font-size: 25px;
+      font-family: SimplonBold;
+      font-weight: 400;
+      text-align: left;
 
       &:focus {
         outline: none;
       }
+    }
+
+    #smart-tab-manager-preview {
+      color: $pinkish-gray;
     }
   }
 }
