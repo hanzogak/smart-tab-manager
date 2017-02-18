@@ -537,9 +537,6 @@ window.addEventListener("message", function(event) {
     return;
   }
   if (event.data.type && (event.data.type == 'submit')) {
-    if(event.data.text == 'clear'){
-      chrome.storage.local.clear();
-    }
     console.log(event.data.text);
     //TODO : parsing "event.data.text", then call handleFunction.
   }
