@@ -73,3 +73,23 @@ function sortTabDiv(tabList) {
     }
   });
 }
+
+function sortStorageTabDiv(tabList, keyName) {
+  var oldIndex, newIndex;
+
+  tabList.sortable({
+    opacity: 0.8,
+    start: function(event, ui) {
+      oldIndex = ui.item.index();
+    },
+    update: function (event, ui) {
+      newIndex = ui.item.index();
+
+      var storageList = JSON.parse(localStorage.getItem(keyName));
+      var pickedTab = storageList[oldIndex];
+      storageList.splice(oldIndex, 1);
+      storageList.splice(newIndex, 0, pickedTab);
+      localStorage.setItem(keyName, JSON.stringify(storageList));
+    }
+  });
+}

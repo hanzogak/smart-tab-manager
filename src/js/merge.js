@@ -19,6 +19,8 @@ $(function () {
   var tabList = $('#tab-list');
   var mergedTabs = JSON.parse(localStorage.getItem(mergeListName));
 
+  sortStorageTabDiv(tabList, mergeListName);
+
   for (var i in mergedTabs) {
     var newTab = createStorageTabDiv(mergedTabs[i], mergeListName);
     tabList.append(newTab);
