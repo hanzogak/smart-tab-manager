@@ -37,7 +37,11 @@ window.addEventListener("message", function(event) {
     }
     if (event.data.type && (event.data.type == 'savelist answer')) {
         saveList = event.data.src;
-        console.log(saveList.toString());
+        if(saveList == null){
+          console.log('saveList empty');
+        } else {
+          console.log(saveList.length + saveList.toString());
+        }
     }
 }, false);
 
@@ -65,12 +69,11 @@ function previewCommand() {
   var word ='';
 
   inputDiv.keyup(function(e){
-
     var val = $(this).val();
     var stage = 0;
     var pre = '';
 
-    if(e.which === 13 && word == ''){
+    if(e.which === 13 ){
       window.postMessage({ type: "submit", text: val }, "*");
     }
 
@@ -88,7 +91,8 @@ function previewCommand() {
     }
 
     //auto complete
-    if((e.which == 13 || e.which === 39) && word != ''){  //(->)
+    if(e.which === 39 && word != ''){  //(->)
+        console.log(stage + ","+pre+ "," + word);
       if (stage == 0 || stage == 1){
           e.preventDefault();
           inputDiv.val(word + " ");
@@ -109,17 +113,19 @@ function previewCommand() {
     } else if (stage == 1) {
       src = optionList[pre.slice(0, pre.length-1)];
     } else if (stage == 2 && pre == 'open -saved '){
-      src = saveList;
+      if(saveList != null){
+        src = saveList;
+      }
     } else{
       return;
     }
 
+    word = '';
     for(var i = 0; i< src.length; i++){
       if(src[i].indexOf(val) === 0){
         word = src[i];
         break;
       }
-      word = '';
     }
 
     word = pre + word;

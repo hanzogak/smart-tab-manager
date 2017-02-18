@@ -486,13 +486,15 @@ function autocomplete(){
   $('#keyword').autocomplete();
   if(command == 'open' && option == CONST_SAVED){
     chrome.storage.local.get('saveList', function (result) {
-      $( '#keyword' ).autocomplete({
-          source : result.saveList,
-          minLength : 0,
-          position: { my : "right top", at: "right bottom", collision : "fit"},
-      }).on("focus", function(){
-          $(this).autocomplete("search", '');
-      });
+      if(result.saveList != null){
+        $( '#keyword' ).autocomplete({
+            source : result.saveList,
+            minLength : 0,
+            position: { my : "right top", at: "right bottom", collision : "fit"},
+        }).on("focus", function(){
+            $(this).autocomplete("search", '');
+        });
+      }
     });
   } else if(command == 'search' && option == CONST_TITLE){
     var openSaveSource = [];
@@ -535,6 +537,9 @@ window.addEventListener("message", function(event) {
     return;
   }
   if (event.data.type && (event.data.type == 'submit')) {
+    if(event.data.text == 'clear'){
+      chrome.storage.local.clear();
+    }
     console.log(event.data.text);
     //TODO : parsing "event.data.text", then call handleFunction.
   }
