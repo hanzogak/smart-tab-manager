@@ -38,7 +38,8 @@
       line-height: 50px;
       font-size: 25px;
       font-family: SimplonBold;
-      font-weight: 400; }
+      font-weight: 400;
+      text-align: left; }
       #smart-tab-manager-command-box > #command-box #smart-tab-manager-input:focus, #smart-tab-manager-command-box > #command-box #smart-tab-manager-preview:focus {
         outline: none; }
     #smart-tab-manager-command-box > #command-box #smart-tab-manager-preview {
