@@ -1,3 +1,10 @@
+function getParameterByName(name) {
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(location.search);
+
+  return results === null ? null : results[1].replace(/\+/g, " ");
+}
+
 function createTabDiv(tabInfo) {
   var newTabDiv = $('<div class="tab">' +
     '<div class="id hide"></div>' +
@@ -28,15 +35,31 @@ function createTabDiv(tabInfo) {
   return newTabDiv;
 }
 
-function getParameterByName(name) {
-  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-    results = regex.exec(location.search);
+function createStorageTabDiv(tabInfo, keyName) {
+  var newTabDiv = $('<div class="tab">' +
+    '<div class="delete"></div>' +
+    '<div class="title"></div>' +
+    '<div class="url"></div>' +
+    '</div>');
 
-  if (results === null) {
-    return []
-  } else {
-    return results[1].replace(/\+/g, " ").split(',').map(Number);
-  }
+  newTabDiv.find('.title').text(tabInfo.title);
+  newTabDiv.find('.url').text(tabInfo.url);
+
+  newTabDiv.click(function(e) {
+    if(e.target.className == 'delete') {
+      // tab delete event
+      var storageList = JSON.parse(localStorage.getItem(keyName));
+      storageList.splice($(this).index(), 1);
+      localStorage.setItem(keyName, JSON.stringify(storageList));
+
+      newTabDiv.remove();
+    } else {
+      // tab active event
+      chrome.tabs.create({"url": tabInfo.url, "selected": true});
+    }
+  });
+
+  return newTabDiv;
 }
 
 function sortTabDiv(tabList) {

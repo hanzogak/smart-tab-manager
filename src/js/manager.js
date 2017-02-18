@@ -473,7 +473,7 @@ function handleMerge(option, keyword) {
       if((option == CONST_URL && tabs[i].url.includes(keyword)) || (option == CONST_TITLE && tabs[i].title.includes(keyword))) {
         if(!tabs[i].url.includes(chrome.runtime.id)) {
           mergeList.push({url : tabs[i].url, title : tabs[i].title});
-          //chrome.tabs.remove(tabs[i].id);
+          chrome.tabs.remove(tabs[i].id);
         }
       }
     }
@@ -481,14 +481,26 @@ function handleMerge(option, keyword) {
     var mergeListName = '_'+option+'_'+keyword;
 
     if(localStorage.getItem(mergeListName) != null) {
-      console.log(JSON.parse(localStorage.getItem(mergeListName).responseText));
+      var existMergeList = JSON.parse(localStorage.getItem(mergeListName));
+      existMergeList = existMergeList.concat(mergeList);
+      localStorage.setItem(mergeListName, JSON.stringify(existMergeList));
     } else {
       localStorage.setItem(mergeListName, JSON.stringify(mergeList));
     }
   });
 
-  //var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
-  //chrome.tabs.create({"url": url, "selected": true});
+  var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
+
+  // if there already merged tab, update tab
+  chrome.tabs.query({"currentWindow": true, "url": 'chrome-extension://' + chrome.runtime.id + '/' + url}, function (tabs) {
+    if(tabs.length == 0) {
+      chrome.tabs.create({"url": url, "selected": true});
+    } else {
+      chrome.tabs.reload(tabs[0].id, function() {
+        chrome.tabs.update(tabs[0].id, {highlighted: true, active: true});
+      });
+    }
+  });
 }
 
 /*

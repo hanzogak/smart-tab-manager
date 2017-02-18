@@ -2,6 +2,12 @@ $(function () {
   var tabList = $('#tab-list');
   var indexList = getParameterByName('index');
 
+  if (indexList === null) {
+    indexList = [];
+  } else {
+    indexList = indexList.split(',').map(Number);
+  }
+
   sortTabDiv(tabList);
 
   chrome.tabs.query({"currentWindow": true}, function (tabs) {
