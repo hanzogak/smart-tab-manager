@@ -6,6 +6,7 @@ function createTabDiv(tabInfo) {
     '<div class="url"></div>' +
     '</div>');
 
+  newTabDiv.find('.id').text(tabInfo.id);
   newTabDiv.find('.title').text(tabInfo.title);
   newTabDiv.find('.url').text(tabInfo.url);
 
@@ -36,4 +37,16 @@ function getParameterByName(name) {
   } else {
     return results[1].replace(/\+/g, " ").split(',').map(Number);
   }
+}
+
+function sortTabDiv(tabList) {
+  tabList.sortable({
+    opacity: 0.8,
+    update: function (event, ui) {
+      var itemId = parseInt(ui.item.find('.id').text());
+      var itemIndex = ui.item.index();
+
+      chrome.tabs.move(itemId, {index: itemIndex});
+    }
+  });
 }

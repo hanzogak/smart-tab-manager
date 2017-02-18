@@ -35,6 +35,8 @@ chrome.tabs.onMoved.addListener(function () {
 $(function () {
   var tabList = $('#tab-list');
 
+  sortTabDiv(tabList);
+
   for (var i = 0; i < localStorage.length; i++) {
     var listName = $('.list-name').clone().removeClass('preview');
     listName.text(localStorage.key(i));
