@@ -465,8 +465,30 @@ function handleMerge(option, keyword) {
   if (emptyKeyword(keyword)) {
     return;
   }
-  var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
-  chrome.tabs.create({"url": url, "selected": true});
+
+  chrome.tabs.query({"currentWindow": true}, function (tabs) {
+    var mergeList = [];
+
+    for(var i = 0; i < tabs.length; i++) {
+      if((option == CONST_URL && tabs[i].url.includes(keyword)) || (option == CONST_TITLE && tabs[i].title.includes(keyword))) {
+        if(!tabs[i].url.includes(chrome.runtime.id)) {
+          mergeList.push({url : tabs[i].url, title : tabs[i].title});
+          //chrome.tabs.remove(tabs[i].id);
+        }
+      }
+    }
+
+    var mergeListName = '_'+option+'_'+keyword;
+
+    if(localStorage.getItem(mergeListName) != null) {
+      console.log(JSON.parse(localStorage.getItem(mergeListName).responseText));
+    } else {
+      localStorage.setItem(mergeListName, JSON.stringify(mergeList));
+    }
+  });
+
+  //var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
+  //chrome.tabs.create({"url": url, "selected": true});
 }
 
 /*
