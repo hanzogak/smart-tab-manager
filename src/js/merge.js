@@ -1,81 +1,44 @@
-var CONST_URL = 'url';
-var CONST_TITLE = 'title';
+var currentId = -1;
 
 $(function () {
-  var tabList = $('#tab-list');
-  var tabDiv = $('.tab');
+  // current tab setting
+  chrome.tabs.getCurrent(function (tab) {
+    currentId = tab.id
+  });
 
+  // get page parameter
   var option = getParameterByName('option');
   var keyword = getParameterByName('keyword');
+  var mergeListName = '_' + option + '_' + keyword;
 
   $('#keyword').text(keyword);
   $('#option').text(option);
   document.title = keyword;
 
-  tabDiv.remove();
+  // add tab div
+  var tabList = $('#tab-list');
+  var mergedTabs = JSON.parse(localStorage.getItem(mergeListName));
 
-  var currentId;
-  chrome.tabs.getCurrent(function (tab) {
-    currentId = tab.id
-  });
+  sortStorageTabDiv(tabList, mergeListName);
 
-  chrome.tabs.query({"currentWindow": true}, function (tabs) {
-    if (option == CONST_URL) {
-      for (var i = 0; i < tabs.length; i++) {
-        if(tabs[i].url.includes(keyword) && tabs[i].id != currentId) {
-          addNewTab(tabs[i]);
-          chrome.tabs.remove(tabs[i].id);
-        }
-      }
-    } else if (option == CONST_TITLE) {
-      for (var i = 0; i < tabs.length; i++) {
-        if(tabs[i].title.includes(keyword) && tabs[i].id != currentId) {
-          addNewTab(tabs[i]);
-          chrome.tabs.remove(tabs[i].id);
-        }
-      }
-    }
-  });
-
-  function clickListener(tabInfo, tabId) {
-    tabInfo.click(function(e) {
-      if(e.target.className == 'delete') {
-        chrome.tabs.remove(tabId, function () {
-          tabInfo.remove();
-        });
-      } else {
-        var index = $('.tab').index(tabInfo);
-        chrome.tabs.highlight({'tabs': index});
-      }
-    });
+  for (var i in mergedTabs) {
+    var newTab = createStorageTabDiv(mergedTabs[i], mergeListName);
+    tabList.append(newTab);
   }
 
-  function addNewTab(tabInfo) {
-    var newTabDiv = tabDiv.clone();
-    newTabDiv.find('.title').text(tabInfo.title);
-    newTabDiv.find('.url').text(tabInfo.url);
-
-    if(tabInfo.highlighted) {
-      newTabDiv.addClass('active');
-    }
-
-    tabList.append(newTabDiv);
-
-    clickListener(newTabDiv, tabInfo.id);
-  }
-
-  function getParameterByName(name) {
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(location.search);
-
-    return results === null ? null : results[1].replace(/\+/g, " ");
-  }
-
+  // separate button action
   $('#separate').click(function() {
     $('.tab').find('.url').each(function() {
       chrome.tabs.create({"url":$(this).text(), "selected": false});
     });
-
     chrome.tabs.remove(currentId);
   });
+});
+
+// delete merge list from local storage
+chrome.tabs.onRemoved.addListener(function (tabId) {
+  if(tabId == currentId) {
+    var mergeListName = '_' + getParameterByName('option') + '_' + getParameterByName('keyword');
+    localStorage.removeItem(mergeListName);
+  }
 });

@@ -24,21 +24,23 @@ html, body {
   font-family: SimplonBold;
 
   > .logo {
-    font-size: 18px;
-    font-weight: bold;
-    color: $gold;
+    width: 100%;
+    height: 10%;
+    max-height: 10%;
+
+    background: {
+      image: url('../../resources/logo_gold.png');
+      repeat: no-repeat;
+      size: 70%;
+    }
   }
 
-  > .merge-info, .list-name {
+  > .merge-info {
     clear: both;
     font-size: 24px;
+    line-height: 26px;
     color: white;
     cursor: pointer;
-  }
-
-  .side-bar {
-    width: 30%;
-    color: white;
   }
 }
 
@@ -69,7 +71,6 @@ html, body {
 }
 
 #tab-list {
-  border-radius: 4px;
   height: 90%;
   overflow: scroll;
 
@@ -131,6 +132,61 @@ html, body {
       box-shadow : 0 0 10px;
 
       > .delete {
+        display: block;
+      }
+    }
+  }
+}
+
+#list-set {
+  height: 90%;
+  overflow: scroll;
+
+  > .list-name {
+    overflow: hidden;
+    margin-bottom: 10px;
+    clear: both;
+    font-size: 24px;
+    line-height: 26px;
+    color: white;
+    cursor: pointer;
+
+    &.active {
+      color: $gold;
+    }
+
+    > .name {
+      float: left;
+      width: calc(100% - 60px);
+
+      &.editing {
+        border: 1px solid $error_red;
+      }
+    }
+
+    > .delete, > .edit {
+      float: right;
+      display: none;
+      margin: 3px;
+      width: 20px;
+      height: 20px;
+      background: {
+        repeat: no-repeat;
+        size: 20px;
+      }
+      cursor: pointer;
+
+      &.edit {
+        background-image: url('../../resources/list_edit.png');
+      }
+
+      &.delete {
+        background-image: url('../../resources/list_delete.png');
+      }
+    }
+
+    &:hover {
+      > .delete, > .edit {
         display: block;
       }
     }

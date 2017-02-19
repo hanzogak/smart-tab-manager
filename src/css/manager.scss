@@ -6,6 +6,7 @@ $error_red: #EE5757;
 body {
   margin: 20px;
   width: 400px;
+  height: 150px;
   color: $dark_gray;
 
   div {
@@ -30,6 +31,10 @@ select, input {
 
   font-size: 15px;
   line-height: 20px;
+
+  &.one {
+    width: 100%;
+  }
 }
 
 select {

@@ -108,6 +108,8 @@
 	top: 0;
 	left: 0;
 	cursor: default;
+	height: 100px;
+	overflow: scroll;
 }
 .ui-menu {
 	list-style: none;
@@ -127,6 +129,7 @@
 }
 .ui-menu .ui-menu-item-wrapper {
 	position: relative;
+	margin: 0;
 	padding: 3px 1em 3px .4em;
 }
 .ui-menu .ui-menu-divider {

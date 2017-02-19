@@ -19,7 +19,8 @@ body {
 
 #tab-list {
   border-radius: 4px;
-  overflow: hidden;
+  height: 90%;
+  overflow: scroll;
 
   > .tab {
     position: relative;
@@ -48,7 +49,8 @@ body {
       padding: 0 8px;
       height: 30px;
       line-height: 30px;
-      background-color: $pinkish-gray;
+      background-color: $dark_gray;
+      color: white;
 
       font-size: 16px;
       overflow: hidden;
@@ -58,7 +60,7 @@ body {
 
     > .url {
       padding: 8px;
-      height: 60px;
+      height: 90px;
       line-height: 11px;
       background-color: $white-four;
 

@@ -28,6 +28,23 @@ var optionList = {
   'suspend': ['-older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
 
+var saveList;
+window.postMessage({ type: "savelist request" }, "*");
+window.addEventListener("message", function(event) {
+    // We only accept messages from ourselves
+    if (event.source != window){
+        return;
+    }
+    if (event.data.type && (event.data.type == 'savelist answer')) {
+        saveList = event.data.src;
+        if(saveList == null){
+          console.log('saveList empty');
+        } else {
+          console.log(saveList.length + saveList.toString());
+        }
+    }
+}, false);
+
 $.ajax({
   url: 'chrome-extension://' + chrome.runtime.id + '/src/html/command_box.html',
   type: 'GET',
@@ -56,6 +73,10 @@ function previewCommand() {
     var stage = 0;
     var pre = '';
 
+    if(e.which === 13 ){
+      window.postMessage({ type: "submit", text: val }, "*");
+    }
+
     //set stage
     while(val.indexOf(' ') > 0 && stage < 2){
       pre += val.slice(0, val.indexOf(' ') + 1);
@@ -71,28 +92,40 @@ function previewCommand() {
 
     //auto complete
     if(e.which === 39 && word != ''){  //(->)
-      e.preventDefault();
-      inputDiv.val(word + " ");
-      previewDiv.text(word + " ");
+        console.log(stage + ","+pre+ "," + word);
+      if (stage == 0 || stage == 1){
+          e.preventDefault();
+          inputDiv.val(word + " ");
+          previewDiv.text(word + " ");
+          word = '';
+      } else if (stage == 2){
+          e.preventDefault();
+          inputDiv.val(word);
+          previewDiv.text(word);
+          word = '';
+      }
       return;
     }
 
-    var src;
+    var src = [];
     if(stage == 0) {
       src = commandList;
     } else if (stage == 1) {
       src = optionList[pre.slice(0, pre.length-1)];
     } else if (stage == 2 && pre == 'open -saved '){
-      //TODO : LocalStorage 불러오는 법을 찾아야함
+      if(saveList != null){
+        src = saveList;
+      }
+    } else{
       return;
     }
 
+    word = '';
     for(var i = 0; i< src.length; i++){
       if(src[i].indexOf(val) === 0){
         word = src[i];
         break;
       }
-      word = '';
     }
 
     word = pre + word;
