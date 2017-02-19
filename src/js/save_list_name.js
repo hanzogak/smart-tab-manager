@@ -17,7 +17,7 @@ $(function () {
   });
 
   function nameSubmit() {
-    $('#error-message').text();
+    $('#error-message').text('');
     var newName = $('#newName').val();
 
     if (!newName) {
@@ -38,6 +38,8 @@ $(function () {
         KeyForSaveList.push(newName);
         chrome.storage.local.set({'saveList' : KeyForSaveList});
       });
+
+      window.close();
     }
   }
 

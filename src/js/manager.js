@@ -497,6 +497,7 @@ function handleMerge(option, keyword) {
         chrome.tabs.update(tabs[0].id, {highlighted: true, active: true});
       });
     }
+    window.close();
   });
 }
 
