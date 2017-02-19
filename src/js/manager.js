@@ -445,21 +445,10 @@ function handleSave(option, keyword) {
 
 function saveUrlToLocalStorage(saveList){
   if (saveList.length != 0) {
-    var saveListName = prompt("Please enter name for save list", "NewList");
-    if (localStorage.getItem(saveListName) != null) {
-      alert("Already Exist! Please enter another name.");
-      return;
-    }else{
-      localStorage.setItem(saveListName, JSON.stringify(saveList));
-      chrome.storage.local.get('saveList', function (result) {
-        var KeyForSaveList = [];
-        if(result.saveList != null){
-            KeyForSaveList = result.saveList;
-        }
-        KeyForSaveList.push(saveListName);
-        chrome.storage.local.set({'saveList' : KeyForSaveList});
-      });
-    }
+    var d = new Date();
+    var localKey = 'temp' + d.getTime();
+    localStorage.setItem(localKey, JSON.stringify(saveList));
+    window.location.href = "save_list_name.html?name=" + localKey;
   }
   else {
     $('#error-message').text('no matched tabs');
@@ -572,6 +561,9 @@ window.addEventListener("message", function(event) {
   }
   if (event.data.type && (event.data.type == 'submit')) {
     console.log(event.data.text);
+    if(event.data.text == 'clear'){
+      chrome.storage.local.clear();
+    }
     //TODO : parsing "event.data.text", then call handleFunction.
   }
   else if(event.data.type && (event.data.type == 'savelist request')){
