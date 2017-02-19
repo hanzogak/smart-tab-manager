@@ -449,8 +449,7 @@ function saveUrlToLocalStorage(saveList){
     var localKey = 'temp' + d.getTime();
     localStorage.setItem(localKey, JSON.stringify(saveList));
     window.location.href = "save_list_name.html?name=" + localKey;
-  }
-  else {
+  } else {
     $('#error-message').text('no matched tabs');
   }
 }
@@ -509,13 +508,13 @@ function autocomplete(){
 function showKeywordBox(){
   var command = $('#command').val();
   var option = $('#option').val();
-  if(command == 'order' && option == CONST_TIME){
+  if(command == 'order'){
     $('#keyword').hide();
-  }
-  else if(command == 'save' && option == CONST_ALL){
+  } else if (command == 'save' && option == CONST_ALL){
     $('#keyword').hide();
-  }
-  else{
+  } else if (command == 'preview'){
+    $('#keyword').hide();
+  } else {
     $('#keyword').show();
   }
 }
