@@ -42,6 +42,7 @@ $(function () {
   sortTabDiv(tabList);
 
   previewList.click(function() {
+    $(this).parent().find('.list-name').removeClass('active');
     $(this).addClass('active');
     updatePreviewTabList();
   });
@@ -49,26 +50,66 @@ $(function () {
   // call saved lists from local storage
   for (var i = 0; i < localStorage.length; i++) {
     // append list name to left side
-    var listName = $('.list-name').last().clone().removeClass('preview');
-    listName.text(localStorage.key(i));
+    var listName = $('.list-name').first().clone().removeClass('preview').removeClass('active');
+    listName.append('<div class="edit"></div><div class="delete"></div>').find('.name').text(localStorage.key(i));
     $('#left-side').append(listName);
 
     // list name click event
-    listName.click(function() {
-      previewList.removeClass('active');
-      $(this).addClass('active');
+    listName.find('.name').click(function() {
+      $(this).parent().parent().find('.list-name').removeClass('active');
+      $(this).parent().addClass('active');
       tabList.empty();
 
       var savedListName = $(this).text();
-
-      var mergedTabs = JSON.parse(localStorage.getItem(savedListName));
-
+      var savedTabs = JSON.parse(localStorage.getItem(savedListName));
       sortStorageTabDiv(tabList, savedListName);
 
-      for (var i in mergedTabs) {
-        var newTab = createStorageTabDiv(mergedTabs[i], savedListName);
+      for (var i in savedTabs) {
+        var newTab = createStorageTabDiv(savedTabs[i], savedListName);
         tabList.append(newTab);
       }
+    });
+
+    // list edit click event
+    listName.find('.edit').click(function() {
+      console.log($(this).siblings('.name'));
+      var inputSpace = $(this).siblings('.name');
+      inputSpace.contentEditable = true;
+      inputSpace.focus();
+
+      inputSpace.keydown(function (e) {
+        if (e.keyCode == 13) {
+          $(this).contentEditable = false;
+        }
+      });
+    });
+
+    // list delete click event
+    listName.find('.delete').click(function() {
+      var removeListName = $(this).siblings('.name').text();
+      localStorage.removeItem(removeListName);
+
+      chrome.storage.local.get(function(result){
+        var KeyForSaveList = [];
+        if(result.saveList != null){
+          KeyForSaveList = result.saveList;
+        }
+
+        for(var i in KeyForSaveList) {
+          if (KeyForSaveList[i] == removeListName) {
+            KeyForSaveList.splice(i, 1);
+            break;
+          }
+        }
+
+        chrome.storage.local.set({'saveList' : KeyForSaveList});
+      });
+
+      if($(this).parent().hasClass('active')) {
+        previewList.click();
+      }
+
+      $(this).parent().remove();
     });
   }
 });

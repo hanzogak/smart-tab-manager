@@ -2,7 +2,7 @@ function getParameterByName(name) {
   var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(location.search);
 
-  return results === null ? null : results[1].replace(/\+/g, " ");
+  return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
 function createTabDiv(tabInfo) {
@@ -55,7 +55,7 @@ function createStorageTabDiv(tabInfo, keyName) {
       newTabDiv.remove();
     } else {
       // tab active event
-      chrome.tabs.create({"url": tabInfo.url, "selected": true});
+      chrome.tabs.create({"url": tabInfo.url, "selected": false});
     }
   });
 

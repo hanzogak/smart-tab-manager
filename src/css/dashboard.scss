@@ -29,11 +29,60 @@ html, body {
     color: $gold;
   }
 
-  > .merge-info, .list-name {
+  > .merge-info {
     clear: both;
     font-size: 24px;
+    line-height: 26px;
     color: white;
     cursor: pointer;
+  }
+
+  > .list-name {
+    overflow: hidden;
+    margin: 5px 0;
+    clear: both;
+    font-size: 24px;
+    line-height: 26px;
+    color: white;
+    cursor: pointer;
+
+    &.active {
+      color: $gold;
+    }
+
+    > div {
+      float: left;
+    }
+
+    > .name {
+      margin-right: 3px;
+    }
+
+    > .delete, > .edit {
+      display: none;
+      margin: 3px;
+      width: 20px;
+      height: 20px;
+      background: {
+        repeat: no-repeat;
+        size: 20px;
+      }
+      cursor: pointer;
+
+      &.edit {
+        background-image: url('../../resources/list_edit.png');
+      }
+
+      &.delete {
+        background-image: url('../../resources/list_delete.png');
+      }
+    }
+
+    &:hover {
+      > .delete, > .edit {
+        display: block;
+      }
+    }
   }
 
   .side-bar {
