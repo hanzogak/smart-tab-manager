@@ -8,7 +8,7 @@ var CONST_TIME = 'time';
 
 // This is const variable. Always only append action is allowed.
 var options = {
-  'search': [CONST_URL, CONST_TITLE],
+  'search': [CONST_ALL, CONST_URL, CONST_TITLE],
   'open': [CONST_URL, CONST_SAVED],
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': [CONST_TIME, CONST_TITLE],
@@ -369,7 +369,13 @@ function handleSearch(option, keyword) {
   var tabsIndex = [];
 
   chrome.tabs.query({currentWindow: true}, function (tabList) {
-    if (option == CONST_URL) {
+    if (option == CONST_ALL) {
+      for (var i = 0; i < tabList.length; i++) {
+        if (tabList[i].url.includes(keyword) || tabList[i].title.includes(keyword)) {
+          tabsIndex.push(i);
+        }
+      }
+    } else if (option == CONST_URL) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].url.includes(keyword)) {
           tabsIndex.push(i);
