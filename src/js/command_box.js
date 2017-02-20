@@ -56,6 +56,10 @@ function previewCommand() {
     var stage = 0;
     var pre = '';
 
+    if(e.which ===13){
+      window.postMessage({type: "submit", text: val}, "*");
+    }
+
     //set stage
     while(val.indexOf(' ') > 0 && stage < 2){
       pre += val.slice(0, val.indexOf(' ') + 1);
@@ -85,7 +89,9 @@ function previewCommand() {
     } else if (stage == 2 && pre == 'open -saved '){
       //TODO : LocalStorage 불러오는 법을 찾아야함
       return;
-    }
+    } else {
+			return;
+		}
 
     for(var i = 0; i< src.length; i++){
       if(src[i].indexOf(val) === 0){

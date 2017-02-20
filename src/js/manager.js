@@ -19,6 +19,7 @@ var options = {
   'suspend': ['older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
 
+
 /*
  * function that start with dom starting
  */
@@ -34,6 +35,24 @@ $(function () {
     }
   });
 });
+
+window.addEventListener("message", function(event) {
+  // We only accept messages from ourselves
+  if (event.source != window)
+    return;
+
+  if (event.data.type && (event.data.type == "submit")) {
+    console.log("Content script received: " + event.data.text);
+	  chrome.runtime.sendMessage({"text": event.data.text}, function(response){
+    
+    });
+	}
+	else{
+			//TODO: send message back to command box to report problem.
+
+	}	
+  
+}, false);
 
 /*
  * function for change option for command selection
@@ -62,33 +81,34 @@ function commandSubmit() {
   var command = $('#command').val();
   var option = $('#option').val();
   var keyword = $('#keyword').val();
+	var background = chrome.extension.getBackgroundPage();
   switch (command) {
     case 'search':
-      handleSearch(option, keyword);
+      background.handleSearch(option, keyword);
       break;
     case 'order':
-			handleOrder(option, keyword);
+			background.handleOrder(option, keyword);
       break;
     case 'open':
-      handleOpen(option, keyword);
+      background.handleOpen(option, keyword);
       break;
     case 'close':
-      handleClose(option, keyword);
+      background.handleClose(option, keyword);
       break;
     case 'window':
-      handleWindow(option, keyword);
+      background.handleWindow(option, keyword);
       break;
     case 'suspend':
-      handleSuspend(option, keyword);
+      background.handleSuspend(option, keyword);
       break;
     case 'save':
-      handleSave(option, keyword);
+      background.handleSave(option, keyword);
       break;
     case 'preview':
-      handlePreview();
+      background.handlePreview();
       break;
     case 'merge':
-      handleMerge(option, keyword);
+      background.handleMerge(option, keyword);
       break;
   }
 }
@@ -96,18 +116,19 @@ function commandSubmit() {
 /*
  * function when user empty their keyword input
  */
-function emptyKeyword(keyword){
+/**function emptyKeyword(keyword){
   if (!keyword) {
     $('#error-message').text('input any keyword');
     return true;
   }else{
     return false;
   }
-}
+}**/
 
 /*
  * function for suspend
  */
+/**
 function handleSuspend(option, keyword){
   if(option === 'older'){
   //TODO: develop 'older' option
@@ -171,10 +192,11 @@ function handleSuspend(option, keyword){
     });
   }
 }
-
+**/
 /*
  * function for order
  */
+/**
 function handleOrder(option, keyword){
 	if(option === 'time'){
 	 //TODO: develop time option 
@@ -210,10 +232,11 @@ function handleOrder(option, keyword){
     });
 	}
 }
-
+**/
 /*
  * function for open
  */
+/**
 function handleOpen(option, keyword) {
   if (emptyKeyword(keyword)){
     return;
@@ -238,10 +261,11 @@ function handleOpen(option, keyword) {
     }
   }
 }
-
+**/
 /*
  * function for close
  */
+/**
 function handleClose(option, keyword) {
   if (emptyKeyword(keyword)){
     return;
@@ -294,10 +318,11 @@ function handleClose(option, keyword) {
     });
   }
 }
-
+**/
 /*
  * function for window
  */
+/**
 function handleWindow(option, keyword){
   if (emptyKeyword(keyword)){
     return;
@@ -358,10 +383,11 @@ function handleWindow(option, keyword){
     })
   }
 }
-
+**/
 /*
  * function for search
  */
+/**
 function handleSearch(option, keyword) {
   if (emptyKeyword(keyword)){
     return;
@@ -392,10 +418,11 @@ function handleSearch(option, keyword) {
     }
   });
 }
-
+**/
 /*
  * function for preview
  */
+/**
 function handlePreview(indexArr) {
   var params = indexArr ? '?index=' + indexArr : '';
   window.location.href = "preview.html" + params;
@@ -404,6 +431,7 @@ function handlePreview(indexArr) {
 /*
  * function for save
  */
+/**
 function handleSave(option, keyword) {
   if (option == CONST_ALL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
@@ -457,10 +485,11 @@ function saveUrlToLocalStorage(saveList){
     $('#error-message').text('no matched tabs');
   }
 }
-
+**/
 /*
  * function for merge
  */
+/**
 function handleMerge(option, keyword) {
   if (emptyKeyword(keyword)) {
     return;
@@ -468,10 +497,11 @@ function handleMerge(option, keyword) {
   var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
   chrome.tabs.create({"url": url, "selected": true});
 }
-
+**/
 /*
 * function for auto complete keyword input box
 */
+
 function autocomplete(){
   var command = $('#command').val();
   var option = $('#option').val();
