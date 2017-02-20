@@ -167,8 +167,6 @@ $(function () {
 
   // order-name button action
   btn_order.click(function() {
-    $('.tab').find('.url').each(function() {
-      chrome.tabs.create({"url":$(this).text(), "selected": false});
-    });
+    // TODO: order current tab by name
   });
 });
