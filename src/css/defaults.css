@@ -86,4 +86,7 @@ input:-webkit-autofill {
 [contentEditable=true]:focus {
   outline: none; }
 
+.hide {
+  display: none !important; }
+
 /*# sourceMappingURL=defaults.css.map */

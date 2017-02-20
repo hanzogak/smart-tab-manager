@@ -24,14 +24,11 @@ var options = {
 };
 
 
+
 /*
  * function when user empty their keyword input
  */
 function emptyKeyword(keyword){
-	console.log('keyword: ' + keyword);
-	if(keyword == null) console.log('null!');
-	if(keyword == "") console.log('empty string!');
-	if(keyword == undefined) console.log('undefined!');
   if (!keyword) {
     $('#error-message').text('input any keyword');
     return true;
@@ -43,8 +40,8 @@ function emptyKeyword(keyword){
 /*
  * function for suspend
  */
+
 function handleSuspend(option, keyword){
-	console.log('handleSuspend called');
   if(option === 'older'){
   //TODO: develop 'older' option
     var background = chrome.extension.getBackgroundPage();
@@ -111,8 +108,8 @@ function handleSuspend(option, keyword){
 /*
  * function for order
  */
+
 function handleOrder(option, keyword){
-	console.log('handleOrder called');
 	if(option === 'time'){
 	 //TODO: develop time option 
     var background = chrome.extension.getBackgroundPage();
@@ -151,8 +148,8 @@ function handleOrder(option, keyword){
 /*
  * function for open
  */
+
 function handleOpen(option, keyword) {
-	console.log('handleOpen called');
   if (emptyKeyword(keyword)){
     return;
   }
@@ -180,6 +177,7 @@ function handleOpen(option, keyword) {
 /*
  * function for close
  */
+
 function handleClose(option, keyword) {
   if (emptyKeyword(keyword)){
     return;
@@ -236,15 +234,13 @@ function handleClose(option, keyword) {
 /*
  * function for window
  */
+
 function handleWindow(option, keyword){
-	console.log('handleWindow called');
   if (emptyKeyword(keyword)){
-		console.log('empty keyword');
     return;
   }
   var selectedTabs = [];
   if(option === CONST_ALL){
-		console.log('CONST_ALL');
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1 || tabs[i].title.indexOf(keyword) > -1) {
@@ -261,7 +257,6 @@ function handleWindow(option, keyword){
         $('#error-message').text('no matched tabs');
       }
     })
-		console.log('end of CONST_ALL');
   } else if (option === CONST_URL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
@@ -304,15 +299,21 @@ function handleWindow(option, keyword){
 /*
  * function for search
  */
+
 function handleSearch(option, keyword) {
-	console.log('handleSearch called');
   if (emptyKeyword(keyword)){
     return;
   }
   var tabsIndex = [];
 
   chrome.tabs.query({currentWindow: true}, function (tabList) {
-    if (option == CONST_URL) {
+    if (option == CONST_ALL) {
+      for (var i = 0; i < tabList.length; i++) {
+        if (tabList[i].url.includes(keyword) || tabList[i].title.includes(keyword)) {
+          tabsIndex.push(i);
+        }
+      }
+    } else if (option == CONST_URL) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].url.includes(keyword)) {
           tabsIndex.push(i);
@@ -339,8 +340,8 @@ function handleSearch(option, keyword) {
 /*
  * function for preview
  */
+
 function handlePreview(indexArr) {
-	console.log('handlePreview called');
   var params = indexArr ? '?index=' + indexArr : '';
   window.location.href = "preview.html" + params;
 }
@@ -348,8 +349,8 @@ function handlePreview(indexArr) {
 /*
  * function for save
  */
+
 function handleSave(option, keyword) {
-	console.log('handleSave called');
   if (option == CONST_ALL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       var saveList = [];
@@ -390,15 +391,11 @@ function handleSave(option, keyword) {
 
 function saveUrlToLocalStorage(saveList){
   if (saveList.length != 0) {
-    var saveListName = prompt("Please enter name for save list", "NewList");
-    if (localStorage.getItem(saveListName) != null) {
-      alert("Already Exist! Please enter another name.");
-      return;
-    }else{
-      localStorage.setItem(saveListName, JSON.stringify(saveList));
-    }
-  }
-  else {
+    var d = new Date();
+    var localKey = 'temp' + d.getTime();
+    localStorage.setItem(localKey, JSON.stringify(saveList));
+    window.location.href = "save_list_name.html?name=" + localKey;
+  } else {
     $('#error-message').text('no matched tabs');
   }
 }
@@ -406,13 +403,50 @@ function saveUrlToLocalStorage(saveList){
 /*
  * function for merge
  */
+
 function handleMerge(option, keyword) {
   if (emptyKeyword(keyword)) {
     return;
   }
+
+  chrome.tabs.query({"currentWindow": true}, function (tabs) {
+    var mergeList = [];
+
+    for(var i = 0; i < tabs.length; i++) {
+      if((option == CONST_URL && tabs[i].url.includes(keyword)) || (option == CONST_TITLE && tabs[i].title.includes(keyword))) {
+        if(!tabs[i].url.includes(chrome.runtime.id)) {
+          mergeList.push({url : tabs[i].url, title : tabs[i].title});
+          chrome.tabs.remove(tabs[i].id);
+        }
+      }
+    }
+
+    var mergeListName = '_'+option+'_'+keyword;
+
+    if(localStorage.getItem(mergeListName) != null) {
+      var existMergeList = JSON.parse(localStorage.getItem(mergeListName));
+      existMergeList = existMergeList.concat(mergeList);
+      localStorage.setItem(mergeListName, JSON.stringify(existMergeList));
+    } else {
+      localStorage.setItem(mergeListName, JSON.stringify(mergeList));
+    }
+  });
+
   var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
-  chrome.tabs.create({"url": url, "selected": true});
+
+  // if there already merged tab, update tab
+  chrome.tabs.query({"currentWindow": true, "url": 'chrome-extension://' + chrome.runtime.id + '/' + url}, function (tabs) {
+    if(tabs.length == 0) {
+      chrome.tabs.create({"url": url, "selected": true});
+    } else {
+      chrome.tabs.reload(tabs[0].id, function() {
+        chrome.tabs.update(tabs[0].id, {highlighted: true, active: true});
+      });
+    }
+    window.close();
+  });
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

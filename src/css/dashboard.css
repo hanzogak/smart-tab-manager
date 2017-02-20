@@ -11,17 +11,18 @@ html, body {
   background-color: #282727;
   font-family: SimplonBold; }
   #left-side > .logo {
-    font-size: 18px;
-    font-weight: bold;
-    color: #b99458; }
-  #left-side > .merge-info, #left-side .list-name {
+    width: 100%;
+    height: 10%;
+    max-height: 10%;
+    background-image: url("../../resources/logo_gold.png");
+    background-repeat: no-repeat;
+    background-size: 70%; }
+  #left-side > .merge-info {
     clear: both;
     font-size: 24px;
+    line-height: 26px;
     color: white;
     cursor: pointer; }
-  #left-side .side-bar {
-    width: 30%;
-    color: white; }
 
 #right-side {
   float: left;
@@ -45,7 +46,6 @@ html, body {
     color: white; }
 
 #tab-list {
-  border-radius: 4px;
   height: 90%;
   overflow: scroll; }
   #tab-list > .tab {
@@ -90,5 +90,39 @@ html, body {
       box-shadow: 0 0 10px; }
       #tab-list > .tab:hover > .delete {
         display: block; }
+
+#list-set {
+  height: 90%;
+  overflow: scroll; }
+  #list-set > .list-name {
+    overflow: hidden;
+    margin-bottom: 10px;
+    clear: both;
+    font-size: 24px;
+    line-height: 26px;
+    color: white;
+    cursor: pointer; }
+    #list-set > .list-name.active {
+      color: #b99458; }
+    #list-set > .list-name > .name {
+      float: left;
+      width: calc(100% - 60px); }
+      #list-set > .list-name > .name.editing {
+        border: 1px solid #EE5757; }
+    #list-set > .list-name > .delete, #list-set > .list-name > .edit {
+      float: right;
+      display: none;
+      margin: 3px;
+      width: 20px;
+      height: 20px;
+      background-repeat: no-repeat;
+      background-size: 20px;
+      cursor: pointer; }
+      #list-set > .list-name > .delete.edit, #list-set > .list-name > .edit.edit {
+        background-image: url("../../resources/list_edit.png"); }
+      #list-set > .list-name > .delete.delete, #list-set > .list-name > .edit.delete {
+        background-image: url("../../resources/list_delete.png"); }
+    #list-set > .list-name:hover > .delete, #list-set > .list-name:hover > .edit {
+      display: block; }
 
 /*# sourceMappingURL=dashboard.css.map */

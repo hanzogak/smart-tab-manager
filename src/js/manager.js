@@ -8,7 +8,7 @@ var CONST_TIME = 'time';
 
 // This is const variable. Always only append action is allowed.
 var options = {
-  'search': [CONST_URL, CONST_TITLE],
+  'search': [CONST_ALL, CONST_URL, CONST_TITLE],
   'open': [CONST_URL, CONST_SAVED],
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': [CONST_TIME, CONST_TITLE],
@@ -395,7 +395,13 @@ function handleSearch(option, keyword) {
   var tabsIndex = [];
 
   chrome.tabs.query({currentWindow: true}, function (tabList) {
-    if (option == CONST_URL) {
+    if (option == CONST_ALL) {
+      for (var i = 0; i < tabList.length; i++) {
+        if (tabList[i].url.includes(keyword) || tabList[i].title.includes(keyword)) {
+          tabsIndex.push(i);
+        }
+      }
+    } else if (option == CONST_URL) {
       for (var i = 0; i < tabList.length; i++) {
         if (tabList[i].url.includes(keyword)) {
           tabsIndex.push(i);
@@ -473,15 +479,11 @@ function handleSave(option, keyword) {
 
 function saveUrlToLocalStorage(saveList){
   if (saveList.length != 0) {
-    var saveListName = prompt("Please enter name for save list", "NewList");
-    if (localStorage.getItem(saveListName) != null) {
-      alert("Already Exist! Please enter another name.");
-      return;
-    }else{
-      localStorage.setItem(saveListName, JSON.stringify(saveList));
-    }
-  }
-  else {
+    var d = new Date();
+    var localKey = 'temp' + d.getTime();
+    localStorage.setItem(localKey, JSON.stringify(saveList));
+    window.location.href = "save_list_name.html?name=" + localKey;
+  } else {
     $('#error-message').text('no matched tabs');
   }
 }
@@ -494,8 +496,43 @@ function handleMerge(option, keyword) {
   if (emptyKeyword(keyword)) {
     return;
   }
+
+  chrome.tabs.query({"currentWindow": true}, function (tabs) {
+    var mergeList = [];
+
+    for(var i = 0; i < tabs.length; i++) {
+      if((option == CONST_URL && tabs[i].url.includes(keyword)) || (option == CONST_TITLE && tabs[i].title.includes(keyword))) {
+        if(!tabs[i].url.includes(chrome.runtime.id)) {
+          mergeList.push({url : tabs[i].url, title : tabs[i].title});
+          chrome.tabs.remove(tabs[i].id);
+        }
+      }
+    }
+
+    var mergeListName = '_'+option+'_'+keyword;
+
+    if(localStorage.getItem(mergeListName) != null) {
+      var existMergeList = JSON.parse(localStorage.getItem(mergeListName));
+      existMergeList = existMergeList.concat(mergeList);
+      localStorage.setItem(mergeListName, JSON.stringify(existMergeList));
+    } else {
+      localStorage.setItem(mergeListName, JSON.stringify(mergeList));
+    }
+  });
+
   var url = 'src/html/merge.html?option=' + option + '&keyword=' + keyword;
-  chrome.tabs.create({"url": url, "selected": true});
+
+  // if there already merged tab, update tab
+  chrome.tabs.query({"currentWindow": true, "url": 'chrome-extension://' + chrome.runtime.id + '/' + url}, function (tabs) {
+    if(tabs.length == 0) {
+      chrome.tabs.create({"url": url, "selected": true});
+    } else {
+      chrome.tabs.reload(tabs[0].id, function() {
+        chrome.tabs.update(tabs[0].id, {highlighted: true, active: true});
+      });
+    }
+    window.close();
+  });
 }
 **/
 /*
@@ -507,17 +544,16 @@ function autocomplete(){
   var option = $('#option').val();
   $('#keyword').autocomplete();
   if(command == 'open' && option == CONST_SAVED){
-    var openSaveSource = [];
-    for(var i = 0; i < localStorage.length; i++){
-      openSaveSource.push(localStorage.key(i));
-    }
-
-    $( '#keyword' ).autocomplete({
-      source : openSaveSource,
-      minLength : 0,
-      position: { my : "right top", at: "right bottom", collision : "fit"},
-    }).on("focus", function(){
-      $(this).autocomplete("search", '');
+    chrome.storage.local.get('saveList', function (result) {
+      if(result.saveList != null){
+        $( '#keyword' ).autocomplete({
+            source : result.saveList,
+            minLength : 0,
+            position: { my : "right top", at: "right bottom", collision : "fit"},
+        }).on("focus", function(){
+            $(this).autocomplete("search", '');
+        });
+      }
     });
   } else if(command == 'search' && option == CONST_TITLE){
     var openSaveSource = [];
@@ -543,13 +579,33 @@ function autocomplete(){
 function showKeywordBox(){
   var command = $('#command').val();
   var option = $('#option').val();
-  if(command == 'order' && option == CONST_TIME){
+  if(command == 'order'){
     $('#keyword').hide();
-  }
-  else if(command == 'save' && option == CONST_ALL){
+  } else if (command == 'save' && option == CONST_ALL){
     $('#keyword').hide();
-  }
-  else{
+  } else if (command == 'preview'){
+    $('#keyword').hide();
+  } else {
     $('#keyword').show();
   }
 }
+
+window.addEventListener("message", function(event) {
+  // We only accept messages from ourselves
+  if (event.source != window){
+    return;
+  }
+  if (event.data.type && (event.data.type == 'submit')) {
+    console.log(event.data.text);
+    if(event.data.text == 'clear'){
+      chrome.storage.local.clear();
+    }
+    //TODO : parsing "event.data.text", then call handleFunction.
+  }
+  else if(event.data.type && (event.data.type == 'savelist request')){
+    chrome.storage.local.get('saveList', function (result) {
+        window.postMessage({ type: 'savelist answer', src: result.saveList }, "*");
+    });
+  }
+}, false);
+
