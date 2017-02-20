@@ -2,6 +2,10 @@ $deep_yellow: #FFBF00;
 $dark_gray: #424242;
 $light_gray: #dcdcdc;
 $error_red: #EE5757;
+$pinkish-gray: #bdbdbd;
+$warm-gray: #757575;
+$white-two: #dcdcdc;
+$white-four: #eeeeee;
 
 body {
   margin: 20px;
@@ -19,6 +23,12 @@ body {
     > span {
       color: $error_red;
     }
+  }
+
+  > #guideline {
+    color: $warm-gray;
+    text-align: center;
+    font-size: 11px;
   }
 }
 
