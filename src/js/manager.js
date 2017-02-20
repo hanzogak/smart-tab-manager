@@ -3,7 +3,7 @@ var CONST_URL = 'url';
 var CONST_TITLE = 'title';
 var CONST_SAVED = 'saved';
 var CONST_ALL = 'all';
-var CONST_VIEW = 'view';
+var CONST_CURRENT = 'current'
 var CONST_TIME = 'time';
 
 // This is const variable. Always only append action is allowed.
@@ -13,8 +13,8 @@ var options = {
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': [CONST_TIME, CONST_TITLE],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'save': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'preview': [CONST_ALL],
+  'save': [CONST_CURRENT, CONST_URL, CONST_TITLE],
+  'preview': [CONST_CURRENT],
   'merge': [CONST_URL, CONST_TITLE],
   'suspend': ['older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
@@ -47,11 +47,13 @@ function changeCommand() {
   }
   autocomplete();
   showKeywordBox();
+  showguideline();
 }
 
 function changeOption(){
   autocomplete();
   showKeywordBox();
+  showguideline();
 }
 
 /*
@@ -411,7 +413,7 @@ function handlePreview(indexArr) {
  * function for save
  */
 function handleSave(option, keyword) {
-  if (option == CONST_ALL) {
+  if (option == CONST_CURRENT) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       var saveList = [];
 
@@ -579,3 +581,52 @@ window.addEventListener("message", function(event) {
   }
 }, false);
 
+function  showguideline(){
+  var command = $('#command').val();
+  var option = $('#option').val();
+
+  $('#guideline').text(guideMsg[command][option]);
+}
+
+var guideMsg = {
+  'search': {
+    [CONST_ALL]: 'Search all tabs with [KEYWORD] in the URL or TITLE',
+    [CONST_URL]: 'Search all tabs with [KEYWORD] in the URL',
+    [CONST_TITLE]: 'Search all tabs with [KEYWORD] in the TITLE'
+  },
+  'open': {
+    [CONST_URL]: 'Open a new tab with [KEYWORD] as the URL',
+    [CONST_SAVED]: 'Open a list of tabs named [KEYWORD]'
+  },
+  'close': {
+    [CONST_ALL]: 'Close all tabs with [KEYWORD] in the URL or TITLE',
+    [CONST_URL]: 'Close all tabs with [KEYWORD] in the URL',
+    [CONST_TITLE]: 'Close all tabs with [KEYWORD] in the TITLE'
+  },
+  'order': {
+    [CONST_TIME]: 'Order all tabs in current window by tab\'s activated time',
+    [CONST_TITLE]: 'Order all tabs in current window by tab\'s title'
+  },
+  'window': {
+    [CONST_ALL]: 'Separate all tabs with [KEYWORD] in the URL or TITLE with a new window',
+    [CONST_URL]: 'Separate all tabs with [KEYWORD] in the URL with a new window',
+    [CONST_TITLE]: 'Separate all tabs with [KEYWORD] in the TITLE with a new window'
+  },
+  'save': {
+    [CONST_CURRENT]: 'Save all tabs in current window',
+    [CONST_URL]: 'Save all tabs with [KEYWORD] in the URL',
+    [CONST_TITLE]: 'Save all tabs with [KEYWORD] in the TITLE'
+  },
+  'preview': {
+    [CONST_CURRENT]: 'Show all tabs in current window'
+  },
+  'merge': {
+    [CONST_URL]: 'Merge all tabs with [KEYWORD] in the URL',
+    [CONST_TITLE]: 'Merge all tabs with [KEYWORD] in the TITLE'
+  },
+  'suspend': {
+    [CONST_ALL]: 'Suspend all tabs with [KEYWORD] in the URL or TITLE',
+    [CONST_URL]: 'Suspend all tabs with [KEYWORD] in the URL',
+    [CONST_TITLE]: 'Suspend all tabs with [KEYWORD] in the TITLE'
+  }
+}
