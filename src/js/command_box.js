@@ -45,23 +45,25 @@ window.addEventListener("message", function(event) {
     }
 }, false);
 
-$.ajax({
-  url: 'chrome-extension://' + chrome.runtime.id + '/src/html/command_box.html',
-  type: 'GET',
-  success: function (data) {
-    $('body').append($(data)).css('overflow-y', 'hidden');
+if($('#smart-tab-manager-command-box').length == 0) {
+  $.ajax({
+    url: 'chrome-extension://' + chrome.runtime.id + '/src/html/command_box.html',
+    type: 'GET',
+    success: function (data) {
+      $('body').append($(data)).css('overflow-y', 'hidden');
 
-    $('#smart-tab-manager-command-box').unbind('click').click(function(event) {
-      if(event.target.id == 'smart-tab-manager-command-box') {
-        $(this).remove();
-        $('body').css('overflow-y', 'scroll');
-      }
-    });
+      $('#smart-tab-manager-command-box').unbind('click').click(function(event) {
+        if(event.target.id == 'smart-tab-manager-command-box') {
+          $(this).remove();
+          $('body').css('overflow-y', 'scroll');
+        }
+      });
 
-    previewCommand();
+      previewCommand();
 
-  }, dataType: 'HTML'
-});
+    }, dataType: 'HTML'
+  });
+}
 
 function previewCommand() {
   var inputDiv = $('#smart-tab-manager-input');

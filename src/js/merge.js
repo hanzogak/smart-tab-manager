@@ -13,7 +13,7 @@ $(function () {
 
   $('#keyword').text(keyword);
   $('#option').text(option);
-  document.title = keyword;
+  document.title = keyword + ' - merged';
 
   // add tab div
   var tabList = $('#tab-list');
@@ -32,6 +32,17 @@ $(function () {
       chrome.tabs.create({"url":$(this).text(), "selected": false});
     });
     chrome.tabs.remove(currentId);
+  });
+
+  // pick color and set favicon
+  $('#pick-color').find('div').click(function() {
+    var selectedColor = $(this).data('color');
+
+    var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = '../../resources/favicon/favi_color_' + selectedColor + '.png';
+    $('head').append(link);
   });
 });
 
