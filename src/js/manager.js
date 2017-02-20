@@ -19,6 +19,49 @@ var options = {
   'suspend': ['older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
 
+var guideMsg = {
+  'search': {
+    'all': 'Search all tabs with [KEYWORD] in the URL or TITLE',
+    'url': 'Search all tabs with [KEYWORD] in the URL',
+    'title': 'Search all tabs with [KEYWORD] in the TITLE'
+  },
+  'open': {
+    'url': 'Open a new tab with [KEYWORD] as the URL',
+    'saved': 'Open a list of tabs named [KEYWORD]'
+  },
+  'close': {
+    'all': 'Close all tabs with [KEYWORD] in the URL or TITLE',
+    'url': 'Close all tabs with [KEYWORD] in the URL',
+    'title': 'Close all tabs with [KEYWORD] in the TITLE'
+  },
+  'order': {
+    'time': 'Order all tabs in current window by tab\'s activated time',
+    'title': 'Order all tabs in current window by tab\'s title'
+  },
+  'window': {
+    'all': 'Separate all tabs with [KEYWORD] in the URL or TITLE with a new window',
+    'url': 'Separate all tabs with [KEYWORD] in the URL with a new window',
+    'title': 'Separate all tabs with [KEYWORD] in the TITLE with a new window'
+  },
+  'save': {
+    'current': 'Save all tabs in current window',
+    'url': 'Save all tabs with [KEYWORD] in the URL',
+    'title': 'Save all tabs with [KEYWORD] in the TITLE'
+  },
+  'preview': {
+    'current': 'Show all tabs in current window'
+  },
+  'merge': {
+    'url': 'Merge all tabs with [KEYWORD] in the URL',
+    'title': 'Merge all tabs with [KEYWORD] in the TITLE'
+  },
+  'suspend': {
+    'older' : 'Suspend all tabs ...',
+    'all': 'Suspend all tabs with [KEYWORD] in the URL or TITLE',
+    'url': 'Suspend all tabs with [KEYWORD] in the URL',
+    'title': 'Suspend all tabs with [KEYWORD] in the TITLE'
+  }
+}
 /*
  * function that start with dom starting
  */
@@ -586,47 +629,4 @@ function  showguideline(){
   var option = $('#option').val();
 
   $('#guideline').text(guideMsg[command][option]);
-}
-
-var guideMsg = {
-  'search': {
-    [CONST_ALL]: 'Search all tabs with [KEYWORD] in the URL or TITLE',
-    [CONST_URL]: 'Search all tabs with [KEYWORD] in the URL',
-    [CONST_TITLE]: 'Search all tabs with [KEYWORD] in the TITLE'
-  },
-  'open': {
-    [CONST_URL]: 'Open a new tab with [KEYWORD] as the URL',
-    [CONST_SAVED]: 'Open a list of tabs named [KEYWORD]'
-  },
-  'close': {
-    [CONST_ALL]: 'Close all tabs with [KEYWORD] in the URL or TITLE',
-    [CONST_URL]: 'Close all tabs with [KEYWORD] in the URL',
-    [CONST_TITLE]: 'Close all tabs with [KEYWORD] in the TITLE'
-  },
-  'order': {
-    [CONST_TIME]: 'Order all tabs in current window by tab\'s activated time',
-    [CONST_TITLE]: 'Order all tabs in current window by tab\'s title'
-  },
-  'window': {
-    [CONST_ALL]: 'Separate all tabs with [KEYWORD] in the URL or TITLE with a new window',
-    [CONST_URL]: 'Separate all tabs with [KEYWORD] in the URL with a new window',
-    [CONST_TITLE]: 'Separate all tabs with [KEYWORD] in the TITLE with a new window'
-  },
-  'save': {
-    [CONST_CURRENT]: 'Save all tabs in current window',
-    [CONST_URL]: 'Save all tabs with [KEYWORD] in the URL',
-    [CONST_TITLE]: 'Save all tabs with [KEYWORD] in the TITLE'
-  },
-  'preview': {
-    [CONST_CURRENT]: 'Show all tabs in current window'
-  },
-  'merge': {
-    [CONST_URL]: 'Merge all tabs with [KEYWORD] in the URL',
-    [CONST_TITLE]: 'Merge all tabs with [KEYWORD] in the TITLE'
-  },
-  'suspend': {
-    [CONST_ALL]: 'Suspend all tabs with [KEYWORD] in the URL or TITLE',
-    [CONST_URL]: 'Suspend all tabs with [KEYWORD] in the URL',
-    [CONST_TITLE]: 'Suspend all tabs with [KEYWORD] in the TITLE'
-  }
 }
