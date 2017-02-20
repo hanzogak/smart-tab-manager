@@ -14,7 +14,7 @@ body {
   #tab-list > .tab {
     position: relative;
     float: left;
-    margin: 5px 1.5%;
+    margin: px 1.5%;
     width: 30%;
     cursor: pointer; }
     #tab-list > .tab > .delete {

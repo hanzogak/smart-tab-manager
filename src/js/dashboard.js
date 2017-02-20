@@ -40,9 +40,19 @@ $(function () {
   var tabList = $('#tab-list');
   var previewList = $('.list-name.preview');
 
+  var btn_open = $('#open-all');
+  var btn_order = $('#order-name');
+
+  btn_order.show();
+  btn_open.hide();
+
   previewList.click(function () {
     $(this).parent().find('.list-name').removeClass('active');
     $(this).addClass('active');
+
+    btn_order.show();
+    btn_open.hide();
+
     updatePreviewTabList();
   });
 
@@ -61,6 +71,8 @@ $(function () {
       $(this).parent().parent().find('.list-name').removeClass('active');
       $(this).parent().addClass('active');
       tabList.empty();
+      btn_order.hide();
+      btn_open.show();
 
       var savedListName = $(this).text();
       var savedTabs = JSON.parse(localStorage.getItem(savedListName));
@@ -145,4 +157,18 @@ $(function () {
       }
     }
   }
+
+  // open-all button action
+  btn_open.click(function() {
+    $('.tab').find('.url').each(function() {
+      chrome.tabs.create({"url":$(this).text(), "selected": false});
+    });
+  });
+
+  // order-name button action
+  btn_order.click(function() {
+    $('.tab').find('.url').each(function() {
+      chrome.tabs.create({"url":$(this).text(), "selected": false});
+    });
+  });
 });

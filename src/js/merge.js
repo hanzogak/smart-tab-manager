@@ -26,14 +26,6 @@ $(function () {
     tabList.append(newTab);
   }
 
-  // separate button action
-  $('#separate').click(function() {
-    $('.tab').find('.url').each(function() {
-      chrome.tabs.create({"url":$(this).text(), "selected": false});
-    });
-    chrome.tabs.remove(currentId);
-  });
-
   // pick color and set favicon
   $('#pick-color').find('div').click(function() {
     var selectedColor = $(this).data('color');
@@ -43,6 +35,14 @@ $(function () {
     link.rel = 'shortcut icon';
     link.href = '../../resources/favicon/favi_color_' + selectedColor + '.png';
     $('head').append(link);
+  });
+
+  // separate button action
+  $('#separate').click(function() {
+    $('.tab').find('.url').each(function() {
+      chrome.tabs.create({"url":$(this).text(), "selected": false});
+    });
+    chrome.tabs.remove(currentId);
   });
 });
 

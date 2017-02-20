@@ -31,7 +31,7 @@ html, body {
   width: 70vw;
   height: 100vh; }
 
-#separate {
+.right-btn {
   margin: 5px 1.5%;
   border: 1px solid #b99458;
   border-radius: 3px;
@@ -40,8 +40,8 @@ html, body {
   line-height: 20px;
   color: #b99458;
   cursor: pointer; }
-  #separate:hover {
-    transition: background-color .5s ease-out;
+  .right-btn:hover {
+    transition: background-color .3s ease-out;
     background-color: #b99458;
     color: white; }
 
@@ -53,7 +53,7 @@ html, body {
   #tab-list > .tab {
     position: relative;
     float: left;
-    margin: 5px 1.5%;
+    margin: 10px 1.5%;
     width: 30%;
     cursor: pointer; }
     #tab-list > .tab > .delete {

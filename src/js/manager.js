@@ -594,11 +594,7 @@ function autocomplete(){
 function showKeywordBox(){
   var command = $('#command').val();
   var option = $('#option').val();
-  if(command == 'order'){
-    $('#keyword').hide();
-  } else if (command == 'save' && option == CONST_ALL){
-    $('#keyword').hide();
-  } else if (command == 'preview'){
+  if(command == 'order' || option == CONST_CURRENT){
     $('#keyword').hide();
   } else {
     $('#keyword').show();
