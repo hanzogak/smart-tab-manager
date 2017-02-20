@@ -109,32 +109,60 @@ function handleSuspend(option, keyword){
  * function for order
  */
 
-function handleOrder(option, keyword){
-	if(option === 'time'){
-	 //TODO: develop time option 
-    var background = chrome.extension.getBackgroundPage();
-    var currWindowId = undefined;
-    chrome.tabs.query({"currentWindow": true, "active": true}, function(tabs){
-      if(tabs.length == 0){
-        alert('current tab is empty');
-      } else {
-        currWindowId = tabs[0].windowId;
-        console.log('current window id: ' + currWindowId);
-      }
-      var currTabs = background.windows_collection[currWindowId.valueOf()];
-      console.log('currTabs: ' + JSON.stringify(currTabs, null, 2));
+function sortByTime(tabs, tabCollection){
+  var big = tabs[0].id;
+  for(var j = tabs.length; j > 0; j--){
+    for(var i = 1; i <= j-1; i++){
+      if(tabCollection[tabs[i-1].id] > tabCollection[tabs[i].id]) big = tabs[i].id;
 
-      for(var tabid in currTabs){
-        console.log('tabid: ' + tabid.valueOf() + ', value: ' + currTabs[tabid.valueOf()]);
-        //TODO: move tabs 
+    }
+    chrome.tabs.move(big, {"index": -1});
+  }
+
+
+
+
+}
+
+function handleOrder(option, keyword){
+	if(option === CONST_TIME){
+	  //TODO: develop time option 
+    chrome.tabs.query({"currentWindow": true}, function(tabs){
+      for(var i = 0; i < tabs.length; i++){
+        console.log(tabs[i].id + ' ');
       }
+      var background = chrome.extension.getBackgroundPage();
+      var tabCollection = background.tabsCollection;
+      sortByTime(tabs, tabCollection);
+
+      /**tabs.sort(function (low, high){
+        var background = chrome.extension.getBackgroundPage();
+        var tabCollection = background.tabsCollection;
+        if(tabCollection[low.id] < tabCollection[high.id]){
+          return -1;
+        }
+        else if(tabCollection[low.id] == tabCollection[high.id]) return 0;
+        else return 1;
+        //console.log((parseInt(tabCollection[low.id]) - parseInt(tabCollection[high.id])));
+        //return (parseInt(tabCollection[low.id]) - parseInt(tabCollection[high.id])); 
+      });**/
+      
+      //for(var i = 0; i < tabs.length; i++){
+      //  console.log(tabs[i].id + ' ');
+      //}
+
+      //for(var i = 0; i < tabs.length; i++){
+      //  chrome.tabs.move(tabs[i].id, {index: i});
+      //}
     });
   }
-	else if(option === 'name'){
+	else if(option === CONST_TITLE){
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       tabs.sort(function (low, high){
-        if(low.title < high.title) return -1;
-        else if(low.title == high.title) return 0;
+        var lowLowerCase = low.title.toLowerCase();
+        var highLowerCase = high.title.toLowerCase();
+        if(lowLowerCase < highLowerCase) return -1;
+        else if(lowLowerCase == highLowerCase) return 0;
         else return 1;
       });
       for(var i = 0; i < tabs.length; i++){
@@ -143,6 +171,22 @@ function handleOrder(option, keyword){
 
     });
 	}
+	else if(option === CONST_URL){
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      tabs.sort(function (low, high){
+        var lowLowerCase = low.url.toLowerCase();
+        var highLowerCase = high.url.toLowerCase();
+        if(lowLowerCase < highLowerCase) return -1;
+        else if(lowLowerCase == highLowerCase) return 0;
+        else return 1;
+      });
+      for(var i = 0; i < tabs.length; i++){
+        chrome.tabs.move(tabs[i].id, {index: i});
+      }
+
+    });
+	}
+
 }
 
 /*
