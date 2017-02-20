@@ -118,9 +118,7 @@ function previewCommand() {
       }
     } else{
       return;
-    } else {
-			return;
-		}
+    }
 
     word = '';
     for(var i = 0; i< src.length; i++){
