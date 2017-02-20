@@ -416,7 +416,7 @@ function handleSave(option, keyword) {
       var saveList = [];
 
       for(var i = 0; i < tabs.length; i++){
-        saveList.push({url : tabs[i].url, title : tabs[i].title });
+        saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
       }
       saveUrlToLocalStorage(saveList);
     });
@@ -428,7 +428,7 @@ function handleSave(option, keyword) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1) {
-          saveList.push({url : tabs[i].url, title : tabs[i].title });
+          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
         }
       }
       saveUrlToLocalStorage(saveList);
@@ -441,7 +441,7 @@ function handleSave(option, keyword) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
-          saveList.push({url : tabs[i].url, title : tabs[i].title });
+          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
         }
       }
       saveUrlToLocalStorage(saveList);
@@ -474,7 +474,7 @@ function handleMerge(option, keyword) {
     for(var i = 0; i < tabs.length; i++) {
       if((option == CONST_URL && tabs[i].url.includes(keyword)) || (option == CONST_TITLE && tabs[i].title.includes(keyword))) {
         if(!tabs[i].url.includes(chrome.runtime.id)) {
-          mergeList.push({url : tabs[i].url, title : tabs[i].title});
+          mergeList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl});
           chrome.tabs.remove(tabs[i].id);
         }
       }
@@ -578,4 +578,3 @@ window.addEventListener("message", function(event) {
     });
   }
 }, false);
-

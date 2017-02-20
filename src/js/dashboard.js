@@ -1,7 +1,8 @@
 function updatePreviewTabList() {
   // update current preview list only when preview list is active
-  if($('.list-name.preview').hasClass('active')) {
+  if ($('.list-name.preview').hasClass('active')) {
     var tabList = $('#tab-list');
+    sortTabDiv(tabList);
 
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       tabList.empty();
@@ -39,9 +40,7 @@ $(function () {
   var tabList = $('#tab-list');
   var previewList = $('.list-name.preview');
 
-  sortTabDiv(tabList);
-
-  previewList.click(function() {
+  previewList.click(function () {
     $(this).parent().find('.list-name').removeClass('active');
     $(this).addClass('active');
     updatePreviewTabList();
@@ -55,8 +54,8 @@ $(function () {
     $('#list-set').append(listName);
 
     // list name click event
-    listName.find('.name').click(function() {
-      if($(this).hasClass('editing'))
+    listName.find('.name').click(function () {
+      if ($(this).hasClass('editing'))
         return;
 
       $(this).parent().parent().find('.list-name').removeClass('active');
@@ -74,27 +73,27 @@ $(function () {
     });
 
     // list delete click event
-    listName.find('.delete').click(function() {
+    listName.find('.delete').click(function () {
       var removeListName = $(this).siblings('.name').text();
       localStorage.removeItem(removeListName);
 
-      chrome.storage.local.get(function(result){
+      chrome.storage.local.get(function (result) {
         var KeyForSaveList = [];
-        if(result.saveList != null){
+        if (result.saveList != null) {
           KeyForSaveList = result.saveList;
         }
 
-        for(var i in KeyForSaveList) {
+        for (var i in KeyForSaveList) {
           if (KeyForSaveList[i] == removeListName) {
             KeyForSaveList.splice(i, 1);
             break;
           }
         }
 
-        chrome.storage.local.set({'saveList' : KeyForSaveList});
+        chrome.storage.local.set({'saveList': KeyForSaveList});
       });
 
-      if($(this).parent().hasClass('active')) {
+      if ($(this).parent().hasClass('active')) {
         previewList.click();
       }
 
@@ -102,46 +101,48 @@ $(function () {
     });
 
     // list edit click event
-    listName.find('.edit').click(function() {
+    listName.find('.edit').click(function () {
       var inputSpace = $(this).siblings('.name');
-      inputSpace.prop('contenteditable',true).attr("spellcheck",false).addClass('editing');
+      inputSpace.prop('contenteditable', true).attr("spellcheck", false).addClass('editing');
       inputSpace.focus();
 
       var originName = inputSpace.text();
 
       inputSpace.keydown(function (e) {
         if (e.keyCode == 13) {
-          $(this).prop('contenteditable',false).removeClass('editing');
+          $(this).prop('contenteditable', false).removeClass('editing');
           changeStorageData(originName, $(this).text());
         }
       });
 
       inputSpace.focusout(function () {
-        $(this).prop('contenteditable',false).removeClass('editing');
+        $(this).prop('contenteditable', false).removeClass('editing');
         changeStorageData(originName, $(this).text());
       });
     });
 
     function changeStorageData(originName, newName) {
       var originList = localStorage.getItem(originName);
-      localStorage.removeItem(originName);
-      localStorage.setItem(newName, originList);
+      if (originList !== null) {
+        localStorage.setItem(newName, originList);
+        localStorage.removeItem(originName);
 
-      chrome.storage.local.get(function(result){
-        var KeyForSaveList = [];
-        if(result.saveList != null){
-          KeyForSaveList = result.saveList;
-        }
-
-        for(var i in KeyForSaveList) {
-          if (KeyForSaveList[i] == originName) {
-            KeyForSaveList.splice(i, 1, newName);
-            break;
+        chrome.storage.local.get(function(result){
+          var KeyForSaveList = [];
+          if(result.saveList != null){
+            KeyForSaveList = result.saveList;
           }
-        }
 
-        chrome.storage.local.set({'saveList' : KeyForSaveList});
-      });
+          for(var i in KeyForSaveList) {
+            if (KeyForSaveList[i] == originName) {
+              KeyForSaveList.splice(i, 1, newName);
+              break;
+            }
+          }
+
+          chrome.storage.local.set({'saveList' : KeyForSaveList});
+        });
+      }
     }
   }
 });
