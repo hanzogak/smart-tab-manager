@@ -9,7 +9,7 @@ $(function () {
   // get page parameter
   var option = getParameterByName('option');
   var keyword = getParameterByName('keyword');
-  var mergeListName = '_' + option + '_' + keyword;
+  var mergeListName = '_hanzogak_merge_' + option + '_' + keyword;
 
   $('#keyword').text(keyword);
   $('#option').text(option);
@@ -49,7 +49,7 @@ $(function () {
 // delete merge list from local storage
 chrome.tabs.onRemoved.addListener(function (tabId) {
   if(tabId == currentId) {
-    var mergeListName = '_' + getParameterByName('option') + '_' + getParameterByName('keyword');
+    var mergeListName = '_hanzogak_merge_' + getParameterByName('option') + '_' + getParameterByName('keyword');
     localStorage.removeItem(mergeListName);
   }
 });

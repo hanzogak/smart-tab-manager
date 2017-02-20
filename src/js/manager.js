@@ -525,7 +525,7 @@ function handleMerge(option, keyword) {
       }
     }
 
-    var mergeListName = '_'+option+'_'+keyword;
+    var mergeListName = '_hanzogak_merge_'+option+'_'+keyword;
 
     if(localStorage.getItem(mergeListName) != null) {
       var existMergeList = JSON.parse(localStorage.getItem(mergeListName));
