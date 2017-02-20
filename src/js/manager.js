@@ -3,7 +3,7 @@ var CONST_URL = 'url';
 var CONST_TITLE = 'title';
 var CONST_SAVED = 'saved';
 var CONST_ALL = 'all';
-var CONST_CURRENT = 'current'
+var CONST_CURRENT = 'current';
 var CONST_TIME = 'time';
 
 // This is const variable. Always only append action is allowed.
@@ -16,7 +16,7 @@ var options = {
   'save': [CONST_CURRENT, CONST_URL, CONST_TITLE],
   'preview': [CONST_CURRENT],
   'merge': [CONST_URL, CONST_TITLE],
-  'suspend': ['older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
+  'suspend': ['older', CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
 
 var guideMsg = {
@@ -61,7 +61,7 @@ var guideMsg = {
     'url': 'Suspend all tabs with [KEYWORD] in the URL',
     'title': 'Suspend all tabs with [KEYWORD] in the TITLE'
   }
-}
+};
 /*
  * function that start with dom starting
  */
@@ -90,13 +90,13 @@ function changeCommand() {
   }
   autocomplete();
   showKeywordBox();
-  showguideline();
+  showGuideLine();
 }
 
 function changeOption(){
   autocomplete();
   showKeywordBox();
-  showguideline();
+  showGuideLine();
 }
 
 /*
@@ -302,9 +302,7 @@ function handleClose(option, keyword) {
       if(selectedTabs.length === 0){
         $('#error-message').text('no matched tabs');
       } else {
-        if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
-          chrome.tabs.remove(selectedTabs);
-        }
+        chrome.tabs.remove(selectedTabs);
       }
     });
   } else if (option === CONST_URL) {
@@ -317,9 +315,7 @@ function handleClose(option, keyword) {
       if(selectedTabs.length === 0){
         $('#error-message').text('no matched tabs');
       } else {
-        if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
-          chrome.tabs.remove(selectedTabs);
-        }
+        chrome.tabs.remove(selectedTabs);
       }
     });
   } else if (option === CONST_TITLE) {
@@ -332,9 +328,7 @@ function handleClose(option, keyword) {
       if(selectedTabs.length === 0){
         $('#error-message').text('no matched tabs');
       } else {
-        if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
-          chrome.tabs.remove(selectedTabs);
-        }
+        chrome.tabs.remove(selectedTabs);
       }
     });
   }
@@ -356,11 +350,9 @@ function handleWindow(option, keyword){
         }
       }
       if (selectedTabs.length != 0) {
-        if(confirm("Do you really want to move selected " + selectedTabs.length + " tabs to a new window?")) {
-          chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
-            chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
-          })
-        }
+        chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
+          chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
+        });
       } else {
         $('#error-message').text('no matched tabs');
       }
@@ -373,16 +365,13 @@ function handleWindow(option, keyword){
         }
       }
       if (selectedTabs.length != 0) {
-        if(confirm("Do you really want to move selected " +
-            selectedTabs.length + " tabs to a new window?")) {
-          chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
-            chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
-          })
-        }
+        chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
+          chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
+        });
       } else {
         $('#error-message').text('no matched tabs');
       }
-    })
+    });
   } else if (option === CONST_TITLE) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
@@ -391,16 +380,13 @@ function handleWindow(option, keyword){
         }
       }
       if (selectedTabs.length != 0) {
-        if(confirm("Do you really want to move selected " +
-            selectedTabs.length + " tabs to a new window?")) {
-          chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
-            chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
-          })
-        }
+        chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
+          chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
+        });
       } else {
         $('#error-message').text('no matched tabs');
       }
-    })
+    });
   }
 }
 
@@ -461,7 +447,7 @@ function handleSave(option, keyword) {
       var saveList = [];
 
       for(var i = 0; i < tabs.length; i++){
-        saveList.push({url : tabs[i].url, title : tabs[i].title });
+        saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
       }
       saveUrlToLocalStorage(saveList);
     });
@@ -473,7 +459,7 @@ function handleSave(option, keyword) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1) {
-          saveList.push({url : tabs[i].url, title : tabs[i].title });
+          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
         }
       }
       saveUrlToLocalStorage(saveList);
@@ -486,7 +472,7 @@ function handleSave(option, keyword) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
-          saveList.push({url : tabs[i].url, title : tabs[i].title });
+          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
         }
       }
       saveUrlToLocalStorage(saveList);
@@ -519,13 +505,13 @@ function handleMerge(option, keyword) {
     for(var i = 0; i < tabs.length; i++) {
       if((option == CONST_URL && tabs[i].url.includes(keyword)) || (option == CONST_TITLE && tabs[i].title.includes(keyword))) {
         if(!tabs[i].url.includes(chrome.runtime.id)) {
-          mergeList.push({url : tabs[i].url, title : tabs[i].title});
+          mergeList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl});
           chrome.tabs.remove(tabs[i].id);
         }
       }
     }
 
-    var mergeListName = '_'+option+'_'+keyword;
+    var mergeListName = '_hanzogak_merge_'+option+'_'+keyword;
 
     if(localStorage.getItem(mergeListName) != null) {
       var existMergeList = JSON.parse(localStorage.getItem(mergeListName));
@@ -594,11 +580,7 @@ function autocomplete(){
 function showKeywordBox(){
   var command = $('#command').val();
   var option = $('#option').val();
-  if(command == 'order'){
-    $('#keyword').hide();
-  } else if (command == 'save' && option == CONST_ALL){
-    $('#keyword').hide();
-  } else if (command == 'preview'){
+  if(command == 'order' || option == CONST_CURRENT){
     $('#keyword').hide();
   } else {
     $('#keyword').show();
@@ -624,7 +606,7 @@ window.addEventListener("message", function(event) {
   }
 }, false);
 
-function  showguideline(){
+function showGuideLine(){
   var command = $('#command').val();
   var option = $('#option').val();
 
