@@ -8,7 +8,7 @@ var CONST_SAVED = 'saved';
 var CONST_ALL = 'all';
 var CONST_CURRENT = 'current';
 var CONST_TIME = 'time';
-
+var CONST_OLDER = 'older';
 var CONST_INT_MIN = 0;
 
 // This is const variable. Always only append action is allowed.
@@ -21,7 +21,7 @@ var options = {
   'save': [CONST_CURRENT, CONST_URL, CONST_TITLE],
   'preview': [CONST_CURRENT],
   'merge': [CONST_URL, CONST_TITLE],
-  'suspend': ['older', CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
+  'suspend': [CONST_OLDER, CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
 
 var guideMsg = {
@@ -109,13 +109,13 @@ function emptyKeyword(keyword){
  */
 
 function handleSuspend(option, keyword){
-  if(option === 'older'){
+  if(option === CONST_OLDER){
   //TODO: develop 'older' option
     var background = chrome.extension.getBackgroundPage();
     var currWindowId = undefined;
     chrome.tabs.query({"currentWindow": true, "active": true}, function(tabs){
       if(tabs.length == 0){
-        alert('current tab is empty');
+        insertErrorMessage('current tab is empty');
       } else {
         currWindowId = tabs[0].windowId;
         console.log('current window id: ' + currWindowId);
@@ -135,7 +135,7 @@ function handleSuspend(option, keyword){
       }
     });
   }
-  else if(option === 'url'){
+  else if(option === CONST_URL){
     var lowercase_keyword = keyword.toLowerCase();
 
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
@@ -153,7 +153,7 @@ function handleSuspend(option, keyword){
       }
     });
   }
-  else if(option === 'title'){
+  else if(option === CONST_TITLE){
     var lowercase_keyword = keyword.toLowerCase();
 
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
