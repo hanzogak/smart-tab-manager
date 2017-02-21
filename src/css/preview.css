@@ -9,10 +9,12 @@ body {
   border-radius: 4px;
   height: 90%;
   overflow: scroll; }
+  #tab-list::-webkit-scrollbar {
+    display: none; }
   #tab-list > .tab {
     position: relative;
     float: left;
-    margin: 5px 1.5%;
+    margin: px 1.5%;
     width: 30%;
     cursor: pointer; }
     #tab-list > .tab > .delete {
@@ -26,16 +28,26 @@ body {
       background-repeat: no-repeat;
       background-size: 20px;
       cursor: pointer; }
-    #tab-list > .tab > .title {
-      padding: 0 8px;
+    #tab-list > .tab > .cover {
+      padding: 8px;
       height: 30px;
       line-height: 30px;
       background-color: #424242;
-      color: white;
-      font-size: 16px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: pre; }
+      color: white; }
+      #tab-list > .tab > .cover > .favicon {
+        float: left;
+        margin-right: 8px;
+        width: 30px;
+        height: 30px;
+        background-color: white;
+        border-radius: 15px; }
+      #tab-list > .tab > .cover > .title {
+        float: left;
+        width: calc(100% - 38px);
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: pre; }
     #tab-list > .tab > .url {
       padding: 8px;
       height: 90px;
@@ -43,9 +55,8 @@ body {
       background-color: #eeeeee;
       font-size: 8px;
       overflow: hidden; }
-    #tab-list > .tab.active > .title {
-      background-color: #FFBF00;
-      color: white; }
+    #tab-list > .tab.active > .cover {
+      background-color: #FFBF00; }
     #tab-list > .tab:hover {
       transition: box-shadow .3s ease-out;
       box-shadow: 0 0 10px; }

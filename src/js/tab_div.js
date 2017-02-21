@@ -9,13 +9,19 @@ function createTabDiv(tabInfo) {
   var newTabDiv = $('<div class="tab">' +
     '<div class="id hide"></div>' +
     '<div class="delete"></div>' +
+    '<div class="cover">' +
+    '<img src="../../resources/hanzo_128.png" class="favicon">' +
     '<div class="title"></div>' +
-    '<div class="url"></div>' +
+    '</div>' + '<div class="url"></div>' +
     '</div>');
 
   newTabDiv.find('.id').text(tabInfo.id);
   newTabDiv.find('.title').text(tabInfo.title);
   newTabDiv.find('.url').text(tabInfo.url);
+
+  if(tabInfo.favIconUrl) {
+    newTabDiv.find('.favicon').attr('src', tabInfo.favIconUrl);
+  }
 
   if(tabInfo.highlighted) {
     newTabDiv.addClass('active');
@@ -38,12 +44,18 @@ function createTabDiv(tabInfo) {
 function createStorageTabDiv(tabInfo, keyName) {
   var newTabDiv = $('<div class="tab">' +
     '<div class="delete"></div>' +
+    '<div class="cover">' +
+    '<img src="../../resources/hanzo_128.png" class="favicon">' +
     '<div class="title"></div>' +
-    '<div class="url"></div>' +
+    '</div>' + '<div class="url"></div>' +
     '</div>');
 
   newTabDiv.find('.title').text(tabInfo.title);
   newTabDiv.find('.url').text(tabInfo.url);
+
+  if(tabInfo.favIconUrl) {
+    newTabDiv.find('.favicon').attr('src', tabInfo.favIconUrl);
+  }
 
   newTabDiv.click(function(e) {
     if(e.target.className == 'delete') {

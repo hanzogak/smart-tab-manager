@@ -22,10 +22,14 @@ body {
   height: 90%;
   overflow: scroll;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
   > .tab {
     position: relative;
     float: left;
-    margin: 5px 1.5%;
+    margin: 10px 1.5%;
     width: 30%;
     cursor: pointer;
 
@@ -45,17 +49,31 @@ body {
       cursor: pointer;
     }
 
-    > .title {
-      padding: 0 8px;
+    > .cover {
+      padding: 8px;
       height: 30px;
       line-height: 30px;
       background-color: $dark_gray;
       color: white;
 
-      font-size: 16px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: pre;
+      > .favicon {
+        float: left;
+        margin-right: 8px;
+        width: 30px;
+        height: 30px;
+        background-color: white;
+        border-radius: 15px;
+      }
+
+      > .title {
+        float: left;
+        width: calc(100% - 38px);
+
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: pre;
+      }
     }
 
     > .url {
@@ -69,9 +87,8 @@ body {
     }
 
     &.active {
-      > .title {
+      > .cover {
         background-color: $deep_yellow;
-        color: white;
       }
     }
 
