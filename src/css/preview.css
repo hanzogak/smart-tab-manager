@@ -1,9 +1,14 @@
 body {
-  margin: 20px;
+  margin: 0 auto;
   width: 600px;
   color: #424242; }
-  body > .title {
-    font-weight: bold; }
+  body > .preview {
+    margin: 20px; }
+    body > .preview > .title {
+      margin: 0 1.5%;
+      font-size: 18px;
+      font-weight: bold;
+      color: #b99458; }
 
 #tab-list {
   border-radius: 4px;

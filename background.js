@@ -330,7 +330,7 @@ function handlePreview(indexArr) {
       views[i].window.location.href = url;
     }
   } else {
-    // TODO open popup
+    chrome.tabs.create({"url": url, "selected": true});
   }
 }
 
@@ -396,7 +396,7 @@ function saveUrlToLocalStorage(saveList) {
         views[i].window.location.href = url;
       }
     } else {
-      // TODO open popup
+      chrome.windows.create({'url': url, 'type': 'popup', 'width': 440, 'height': 160, top: (screen.height/2)-100, left: (screen.width/2)-220});
     }
   } else {
     insertErrorMessage("no matched tabs");

@@ -6,14 +6,22 @@ $pinkish-gray: #bdbdbd;
 $warm-gray: #757575;
 $white-two: #dcdcdc;
 $white-four: #eeeeee;
+$gold: #b99458;
 
 body {
-  margin: 20px;
+  margin: 0 auto;
   width: 600px;
   color: $dark_gray;
 
-  > .title {
-    font-weight: bold;
+  > .preview {
+    margin: 20px;
+
+    > .title {
+      margin: 0 1.5%;
+      font-size: 18px;
+      font-weight: bold;
+      color: $gold;
+    }
   }
 }
 
