@@ -6,6 +6,7 @@ $(function () {
     indexList = [];
   } else {
     indexList = indexList.split(',').map(Number);
+    $('.preview > .title').text('Your Search Results');
   }
 
   sortTabDiv(tabList);

@@ -43,7 +43,7 @@ $(function () {
   var previewList = $('.list-name.preview');
 
   var btn_open = $('#open-all');
-  var btn_order = $('#order-title');
+  var btn_order = $('#order-url');
 
   btn_order.show();
   btn_open.hide();
@@ -169,8 +169,8 @@ $(function () {
     });
   });
 
-  // order-title button action
+  // order-url button action
   btn_order.click(function() {
-    background.handleOrder('title');
+    background.handleOrder('url');
   });
 });

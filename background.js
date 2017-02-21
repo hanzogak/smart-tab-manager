@@ -330,7 +330,7 @@ function handlePreview(indexArr) {
       views[i].window.location.href = url;
     }
   } else {
-    // TODO open popup
+    chrome.tabs.create({"url": url, "selected": true});
   }
 }
 
@@ -396,7 +396,7 @@ function saveUrlToLocalStorage(saveList) {
         views[i].window.location.href = url;
       }
     } else {
-      // TODO open popup
+      chrome.windows.create({'url': url, 'type': 'popup', 'width': 440, 'height': 160, top: (screen.height/2)-100, left: (screen.width/2)-220});
     }
   } else {
     insertErrorMessage("no matched tabs");
@@ -480,6 +480,15 @@ function insertErrorMessage(message) {
 var CONST_INT_MIN = 0;
 
 var tabsCollection = {};
+var tabsScreenShot = {};
+
+chrome.tabs.query({}, function (tabs) {
+  var currTime = CONST_INT_MIN;
+  for(var i = 0; i < tabs.length; i++) {
+    tabsCollection[tabs[i].id] = currTime;
+  }
+});
+
 chrome.runtime.onInstalled.addListener(function () {
   tabsCollection = {};
   chrome.tabs.query({}, function (tabs) {
@@ -490,21 +499,21 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-tabsCollection = {};
-chrome.tabs.query({}, function (tabs) {
-  var currTime = CONST_INT_MIN;
-  for(var i = 0; i < tabs.length; i++){
-    tabsCollection[tabs[i].id] = currTime;
-  }
-});
-
-function addToCollection(currTabId, currTime){
+function addToCollection(currTabId, currTime) {
   tabsCollection[currTabId] = currTime;
+
+  chrome.tabs.captureVisibleTab(function(screenUrl) {
+    tabsScreenShot[currTabId] = screenUrl;
+  });
 }
 
-function removeFromCollection(currTabId){
+function removeFromCollection(currTabId) {
   if(currTabId in tabsCollection){
     delete tabsCollection[currTabId];
+  }
+
+  if(currTabId in tabsScreenShot){
+    delete tabsScreenShot[currTabId];
   }
 }
 //Add listeners to be notified when a tab is newly created or activated.
@@ -517,7 +526,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
   addToCollection(activeInfo.tabId, Math.floor(Date.now()/10));
 });
 
-chrome.tabs.onRemoved.addListener(function (tabId, removeInfo){
+chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
   removeFromCollection(tabId); 
 });
 
