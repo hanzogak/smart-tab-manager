@@ -84,8 +84,22 @@ body {
       }
     }
 
+    > .content {
+      padding: 3px;
+      height: 100px;
+      line-height: 11px;
+      background-color: $white-four;
+      box-sizing: border-box;
+      text-align: center;
+
+      > .screen {
+        max-width: 100%;
+        height: 100%;
+      }
+    }
+
     > .url {
-      padding: 8px;
+      padding: 3px;
       height: 90px;
       line-height: 11px;
       background-color: $white-four;
