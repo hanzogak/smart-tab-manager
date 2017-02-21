@@ -28,7 +28,7 @@ html, body {
   float: left;
   padding: 20px;
   box-sizing: border-box;
-  width: 70vw;
+  width: 68vw;
   height: 100vh; }
 
 .right-btn {
@@ -105,6 +105,8 @@ html, body {
 #list-set {
   height: 90%;
   overflow: scroll; }
+  #list-set::-webkit-scrollbar {
+    display: none; }
   #list-set > .list-name {
     overflow: hidden;
     margin-bottom: 10px;

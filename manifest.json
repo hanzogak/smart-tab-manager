@@ -11,12 +11,12 @@
     "default_title": "Smart Tab Manager",
     "default_popup": "src/html/manager.html"
   },
+  "icons": {
+    "128": "resources/hanzo_128.png"
+  },
   "omnibox": { "keyword" : "tabby" },
   "chrome_url_overrides" : {
     "newtab": "src/html/dashboard.html"
-  },
-  "icons": {
-    "128": "resources/hanzo_128.png"
   },
   "permissions": [
     "tabs",
@@ -26,10 +26,7 @@
   "content_scripts": [
     {
       "matches": [ "<all_urls>" ],
-      "js": [
-        "src/js/jquery.min.js",
-        "src/js/manager.js"
-      ]
+      "js": ["src/js/contents.js"]
     }
   ],
   "web_accessible_resources": [

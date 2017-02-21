@@ -14,18 +14,21 @@ var CONST_URL = '-url';
 var CONST_TITLE = '-title';
 var CONST_SAVED = '-saved';
 var CONST_ALL = '-all';
+var CONST_CURRENT = '-current';
 var CONST_TIME = '-time';
+var CONST_OLDER = '-older';
 
+// This is const variable. Always only append action is allowed.
 var optionList = {
-  'search': [CONST_URL, CONST_TITLE],
-  'open': [CONST_URL, CONST_SAVED],
+  'search': [CONST_ALL, CONST_URL, CONST_TITLE],
+  'open': [CONST_SAVED, CONST_URL],
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'order': [CONST_TIME, CONST_TITLE],
+  'order': [CONST_URL, CONST_TITLE, CONST_TIME],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'save': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'preview': [CONST_ALL],
+  'save': [CONST_CURRENT, CONST_URL, CONST_TITLE],
+  'preview': [CONST_CURRENT],
   'merge': [CONST_URL, CONST_TITLE],
-  'suspend': ['-older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
+  'suspend': [CONST_OLDER, CONST_ALL, CONST_URL, CONST_TITLE]
 };
 
 var saveList;
@@ -37,11 +40,6 @@ window.addEventListener("message", function(event) {
     }
     if (event.data.type && (event.data.type == 'savelist answer')) {
         saveList = event.data.src;
-        if(saveList == null){
-          console.log('saveList empty');
-        } else {
-          console.log(saveList.length + saveList.toString());
-        }
     }
 }, false);
 
@@ -51,6 +49,8 @@ if($('#smart-tab-manager-command-box').length == 0) {
     type: 'GET',
     success: function (data) {
       $('body').append($(data)).css('overflow-y', 'hidden');
+
+      $('#smart-tab-manager-input').focus();
 
       $('#smart-tab-manager-command-box').unbind('click').click(function(event) {
         if(event.target.id == 'smart-tab-manager-command-box') {
@@ -79,6 +79,11 @@ function previewCommand() {
       window.postMessage({ type: "submit", text: val }, "*");
     }
 
+    if(e.which === 27 ){
+      $('#smart-tab-manager-command-box').remove();
+      $('body').css('overflow-y', 'scroll');
+    }
+
     //set stage
     while(val.indexOf(' ') > 0 && stage < 2){
       pre += val.slice(0, val.indexOf(' ') + 1);
@@ -94,7 +99,6 @@ function previewCommand() {
 
     //auto complete
     if(e.which === 39 && word != ''){  //(->)
-        console.log(stage + ","+pre+ "," + word);
       if (stage == 0 || stage == 1){
           e.preventDefault();
           inputDiv.val(word + " ");

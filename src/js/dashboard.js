@@ -37,11 +37,13 @@ chrome.tabs.onMoved.addListener(function () {
 });
 
 $(function () {
+  var background = chrome.extension.getBackgroundPage();
+
   var tabList = $('#tab-list');
   var previewList = $('.list-name.preview');
 
   var btn_open = $('#open-all');
-  var btn_order = $('#order-name');
+  var btn_order = $('#order-title');
 
   btn_order.show();
   btn_open.hide();
@@ -58,7 +60,6 @@ $(function () {
 
   // call saved lists from local storage
   for (var i = 0; i < localStorage.length; i++) {
-    // TODO: prevent local storage for merge and time
     if (localStorage.key(i).indexOf('_hanzogak_') != 0) {
       // append list name to left side
       var listName = $('.list-name').first().clone().removeClass('preview').removeClass('active');
@@ -168,8 +169,8 @@ $(function () {
     });
   });
 
-  // order-name button action
+  // order-title button action
   btn_order.click(function() {
-    // TODO: order current tab by name
+    background.handleOrder('title');
   });
 });
