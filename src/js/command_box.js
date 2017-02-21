@@ -14,19 +14,23 @@ var CONST_URL = '-url';
 var CONST_TITLE = '-title';
 var CONST_SAVED = '-saved';
 var CONST_ALL = '-all';
+var CONST_CURRENT = '-current';
 var CONST_TIME = '-time';
+var CONST_OLDER = '-older';
 
+// This is const variable. Always only append action is allowed.
 var optionList = {
-  'search': [CONST_URL, CONST_TITLE],
+  'search': [CONST_ALL, CONST_URL, CONST_TITLE],
   'open': [CONST_URL, CONST_SAVED],
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': [CONST_TIME, CONST_TITLE],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'save': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'preview': [CONST_ALL],
+  'save': [CONST_CURRENT, CONST_URL, CONST_TITLE],
+  'preview': [CONST_CURRENT],
   'merge': [CONST_URL, CONST_TITLE],
-  'suspend': ['-older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
+  'suspend': [CONST_OLDER, CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
+
 
 var saveList;
 window.postMessage({ type: "savelist request" }, "*");
@@ -51,6 +55,8 @@ if($('#smart-tab-manager-command-box').length == 0) {
     type: 'GET',
     success: function (data) {
       $('body').append($(data)).css('overflow-y', 'hidden');
+
+      $('#smart-tab-manager-input').focus();
 
       $('#smart-tab-manager-command-box').unbind('click').click(function(event) {
         if(event.target.id == 'smart-tab-manager-command-box') {

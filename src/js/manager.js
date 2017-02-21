@@ -192,28 +192,6 @@ function showKeywordBox(){
   }
 }
 
-window.addEventListener("message", function(event) {
-  // We only accept messages from ourselves
-  if (event.source != window){
-    return;
-  }
-  if (event.data.type && (event.data.type == 'submit')) {
-    console.log("Content script received: " + event.data.text);
-    if(event.data.text == 'clear'){
-      chrome.storage.local.clear();
-    }
-    else{
-	    chrome.runtime.sendMessage({"text": event.data.text}, function(response){ 
-      });
-    }
-    //TODO : parsing "event.data.text", then call handleFunction.
-  }
-  else if(event.data.type && (event.data.type == 'savelist request')){
-    chrome.storage.local.get('saveList', function (result) {
-        window.postMessage({ type: 'savelist answer', src: result.saveList }, "*");
-    });
-  }
-}, false);
 function showGuideLine(){
   var command = $('#command').val();
   var option = $('#option').val();
