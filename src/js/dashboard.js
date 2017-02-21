@@ -37,11 +37,13 @@ chrome.tabs.onMoved.addListener(function () {
 });
 
 $(function () {
+  var background = chrome.extension.getBackgroundPage();
+
   var tabList = $('#tab-list');
   var previewList = $('.list-name.preview');
 
   var btn_open = $('#open-all');
-  var btn_order = $('#order-name');
+  var btn_order = $('#order-title');
 
   btn_order.show();
   btn_open.hide();
@@ -168,8 +170,8 @@ $(function () {
     });
   });
 
-  // order-name button action
+  // order-title button action
   btn_order.click(function() {
-    // TODO: order current tab by name
+    background.handleOrder('title');
   });
 });

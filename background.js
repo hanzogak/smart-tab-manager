@@ -558,7 +558,7 @@ function parseArg(text){
       handleSearch(option, keyword);
       break;
     case 'order':
-			handleOrder(option, keyword);
+			handleOrder(option);
       break;
     case 'open':
       handleOpen(option, keyword);

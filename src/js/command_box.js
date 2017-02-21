@@ -85,6 +85,11 @@ function previewCommand() {
       window.postMessage({ type: "submit", text: val }, "*");
     }
 
+    if(e.which === 27 ){
+      $('#smart-tab-manager-command-box').remove();
+      $('body').css('overflow-y', 'scroll');
+    }
+
     //set stage
     while(val.indexOf(' ') > 0 && stage < 2){
       pre += val.slice(0, val.indexOf(' ') + 1);

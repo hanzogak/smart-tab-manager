@@ -91,12 +91,14 @@ function changeCommand() {
   autocomplete();
   showKeywordBox();
   showGuideLine();
+  $('#keyword').focus();
 }
 
 function changeOption(){
   autocomplete();
   showKeywordBox();
   showGuideLine();
+  $('#keyword').focus();
 }
 
 /*
@@ -113,7 +115,7 @@ function commandSubmit() {
       background.handleSearch(option, keyword);
       break;
     case 'order':
-			background.handleOrder(option, keyword);
+			background.handleOrder(option);
       break;
     case 'open':
       background.handleOpen(option, keyword);
