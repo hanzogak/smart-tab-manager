@@ -6,6 +6,8 @@ var CONST_ALL = 'all';
 var CONST_VIEW = 'view';
 var CONST_TIME = 'time';
 
+var CONST_SUCCESS = "success";
+var CONST_FAIL = "fail";
 // This is const variable. Always only append action is allowed.
 var options = {
   'search': [CONST_ALL, CONST_URL, CONST_TITLE],
@@ -35,24 +37,6 @@ $(function () {
     }
   });
 });
-
-window.addEventListener("message", function(event) {
-  // We only accept messages from ourselves
-  if (event.source != window)
-    return;
-
-  if (event.data.type && (event.data.type == "submit")) {
-    console.log("Content script received: " + event.data.text);
-	  chrome.runtime.sendMessage({"text": event.data.text}, function(response){
-    
-    });
-	}
-	else{
-			//TODO: send message back to command box to report problem.
-
-	}	
-  
-}, false);
 
 /*
  * function for change option for command selection
@@ -110,7 +94,16 @@ function commandSubmit() {
     case 'merge':
       background.handleMerge(option, keyword);
       break;
+    default:
+      background.insertErrorMessage("Invalid option");
   }
+  //console.log('result: ' + result.result + ', ' + result.text);
+  //if(result.result == CONST_FAIL){
+    
+    //$('#error-message').text(result.text);
+
+
+  //}
 }
 
 /*
@@ -596,9 +589,13 @@ window.addEventListener("message", function(event) {
     return;
   }
   if (event.data.type && (event.data.type == 'submit')) {
-    console.log(event.data.text);
+    console.log("Content script received: " + event.data.text);
     if(event.data.text == 'clear'){
       chrome.storage.local.clear();
+    }
+    else{
+	    chrome.runtime.sendMessage({"text": event.data.text}, function(response){ 
+      });
     }
     //TODO : parsing "event.data.text", then call handleFunction.
   }

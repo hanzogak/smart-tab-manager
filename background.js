@@ -2,13 +2,18 @@
  * This file is for the further features like address bar command.
  */
 
-//
 var CONST_URL = 'url';
 var CONST_TITLE = 'title';
 var CONST_SAVED = 'saved';
 var CONST_ALL = 'all';
 var CONST_VIEW = 'view';
 var CONST_TIME = 'time';
+
+
+var CONST_SUCCESS = "success";
+var CONST_FAIL = "fail";
+
+var CONST_INT_MIN = 0;
 
 // This is const variable. Always only append action is allowed.
 var options = {
@@ -24,13 +29,35 @@ var options = {
 };
 
 
+var CONST_TABSCOLLECTION = "tabsCollection";
+var tabsCollection = {};
+chrome.runtime.onInstalled.addListener(function(details){
+  tabsCollection = {};
+  chrome.tabs.query({}, function (tabs) { 
+    var currTime = CONST_INT_MIN;
+    for(var i = 0; i < tabs.length; i++){
+      tabsCollection[tabs[i].id] = currTime;
+    }
+    //localStorage.setItem("tabsCollection", JSON.stringify(tabsCollection));
+  });
+});
+  
+tabsCollection = {};
+  chrome.tabs.query({}, function (tabs) { 
+    var currTime = CONST_INT_MIN;
+    for(var i = 0; i < tabs.length; i++){
+      tabsCollection[tabs[i].id] = currTime;
+    }
+    //localStorage.setItem("tabsCollection", JSON.stringify(tabsCollection));
+   // alert('Initialization: '+ idx + ': ' + JSON.stringify(tabsCollection, null, 2));
+  });
 
 /*
  * function when user empty their keyword input
  */
 function emptyKeyword(keyword){
   if (!keyword) {
-    $('#error-message').text('input any keyword');
+    //$('#error-message').text('input any keyword');
     return true;
   }else{
     return false;
@@ -54,7 +81,7 @@ function handleSuspend(option, keyword){
         console.log('current window id: ' + currWindowId);
       }
       var currTabs = background.windows_collection[currWindowId.valueOf()];
-      var criteria = Date.now() - keyword.valueOf() * 60 * 1000;
+      var criteria = Math.floor(Date.now()/10) - keyword.valueOf() * 60 * 100;
       console.log('criteria: ' + criteria);
       console.log('currTabs: ' + JSON.stringify(currTabs, null, 2));
       for(var tabid in currTabs){
@@ -102,7 +129,11 @@ function handleSuspend(option, keyword){
         alert(discarded_num + ' tabs are suspended.');
       }
     });
+  }else {
+    //return {"result": CONST_FAIL, "text": "Invalid option"};
+    insertErrorMessage("Invalid option");
   }
+
 }
 
 /*
@@ -113,7 +144,7 @@ function sortByTime(tabs, tabCollection){
   var big = tabs[0].id;
   for(var j = tabs.length; j > 0; j--){
     for(var i = 1; i <= j-1; i++){
-      if(tabCollection[tabs[i-1].id] > tabCollection[tabs[i].id]) big = tabs[i].id;
+      if(parseInt(tabCollection[tabs[i-1].id]) > parseInt(tabCollection[tabs[i].id])) big = tabs[i].id;
 
     }
     chrome.tabs.move(big, {"index": -1});
@@ -128,32 +159,29 @@ function handleOrder(option, keyword){
 	if(option === CONST_TIME){
 	  //TODO: develop time option 
     chrome.tabs.query({"currentWindow": true}, function(tabs){
+      var selectedTabs = [];
+      var str = "";
       for(var i = 0; i < tabs.length; i++){
-        console.log(tabs[i].id + ' ');
+        str += tabs[i].id + ':' + tabsCollection[tabs[i].id] + ' / ';
+        if(parseInt(tabsCollection[tabs[i].id]) != 0) selectedTabs.push(tabs[i].id);
       }
-      var background = chrome.extension.getBackgroundPage();
-      var tabCollection = background.tabsCollection;
-      sortByTime(tabs, tabCollection);
-
-      /**tabs.sort(function (low, high){
-        var background = chrome.extension.getBackgroundPage();
-        var tabCollection = background.tabsCollection;
-        if(tabCollection[low.id] < tabCollection[high.id]){
+      console.log('tabs: ' + str);
+      
+      selectedTabs.sort(function (low, high){
+        if(parseInt(tabsCollection[low]) < parseInt(tabsCollection[high])){
           return -1;
         }
-        else if(tabCollection[low.id] == tabCollection[high.id]) return 0;
+        else if(parseInt(tabsCollection[low]) == parseInt(tabsCollection[high])) return 0;
         else return 1;
-        //console.log((parseInt(tabCollection[low.id]) - parseInt(tabCollection[high.id])));
-        //return (parseInt(tabCollection[low.id]) - parseInt(tabCollection[high.id])); 
-      });**/
-      
-      //for(var i = 0; i < tabs.length; i++){
-      //  console.log(tabs[i].id + ' ');
-      //}
+      });
 
-      //for(var i = 0; i < tabs.length; i++){
-      //  chrome.tabs.move(tabs[i].id, {index: i});
-      //}
+      chrome.tabs.move(selectedTabs, {"index": -1}); 
+      str = "";
+      for(var i = 0; i < tabs.length; i++){
+        str += tabs[i].id + ':' + tabsCollection[tabs[i].id] + ' / ';
+      }
+      console.log('tabs: ' + str);
+      
     });
   }
 	else if(option === CONST_TITLE){
@@ -166,7 +194,7 @@ function handleOrder(option, keyword){
         else return 1;
       });
       for(var i = 0; i < tabs.length; i++){
-        chrome.tabs.move(tabs[i].id, {index: i});
+        chrome.tabs.move(tabs[i].id, {"index": i});
       }
 
     });
@@ -185,7 +213,11 @@ function handleOrder(option, keyword){
       }
 
     });
-	}
+	}else {
+    //return {"result": CONST_FAIL, "text": "Invalid option"};
+    insertErrorMessage("Invalid option");
+  }
+
 
 }
 
@@ -195,7 +227,8 @@ function handleOrder(option, keyword){
 
 function handleOpen(option, keyword) {
   if (emptyKeyword(keyword)){
-    return;
+    //return {"result": CONST_FAIL, "text": "input any keyword"};
+    insertErrorMessage("input any keyword");
   }
   if (option === CONST_URL) {
     if (!(keyword.substr(0, 8) === 'https://'
@@ -213,9 +246,17 @@ function handleOpen(option, keyword) {
       }
     }
     else{
-      $('#error-message').text('no matched savelist');
+      //$('#error-message').text('no matched savelist');
+      //return {"result": CONST_FAIL, "text": "no matched savelist"};
+      insertErrorMessage("no matched savelist");
     }
+  }else {
+    //return {"result": CONST_FAIL, "text": "Invalid option"};
+    insertErrorMessage("Invalid option");
+
   }
+  
+
 }
 
 /*
@@ -224,7 +265,8 @@ function handleOpen(option, keyword) {
 
 function handleClose(option, keyword) {
   if (emptyKeyword(keyword)){
-    return;
+    //return{"result": CONST_FAIL, "text": "input any keyword"};
+    insertErrorMessage("input any keyword");
   }
   var selectedTabs = [];
   if(option === CONST_ALL){
@@ -235,7 +277,9 @@ function handleClose(option, keyword) {
         }
       }
       if(selectedTabs.length === 0){
-        $('#error-message').text('no matched tabs');
+        //$('#error-message').text('no matched tabs');
+        //return{"result": CONST_FAIL, "text": "no matched tabs"};
+        insertErrorMessage("no matched tabs");
       } else {
         if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
           chrome.tabs.remove(selectedTabs);
@@ -250,7 +294,9 @@ function handleClose(option, keyword) {
         }
       }
       if(selectedTabs.length === 0){
-        $('#error-message').text('no matched tabs');
+        //$('#error-message').text('no matched tabs');
+        //return{"result": CONST_FAIL, "text": "no matched tabs"};
+        insertErrorMessage("no matched tabs");
       } else {
         if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
           chrome.tabs.remove(selectedTabs);
@@ -265,14 +311,21 @@ function handleClose(option, keyword) {
         }
       }
       if(selectedTabs.length === 0){
-        $('#error-message').text('no matched tabs');
+        //$('#error-message').text('no matched tabs');
+        //return{"result": CONST_FAIL, "text": "no matched tabs"};
+        insertErrorMessage("no matched tabs");
       } else {
         if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
           chrome.tabs.remove(selectedTabs);
         }
       }
     });
+  } else {
+    //return {"result": CONST_FAIL, "text": "Invalid option"};
+    insertErrorMessage("Invalid option");
+
   }
+  
 }
 
 /*
@@ -281,7 +334,8 @@ function handleClose(option, keyword) {
 
 function handleWindow(option, keyword){
   if (emptyKeyword(keyword)){
-    return;
+    //return{"result": CONST_FAIL, "text": "input any keyword"};
+    insertErrorMessage("input any keyword");
   }
   var selectedTabs = [];
   if(option === CONST_ALL){
@@ -291,6 +345,7 @@ function handleWindow(option, keyword){
           selectedTabs.push(tabs[i].id);
         }
       }
+      console.log('handleWindow: CONT_ALL: selectedTabs.length: ' + selectedTabs.length);
       if (selectedTabs.length != 0) {
         if(confirm("Do you really want to move selected " + selectedTabs.length + " tabs to a new window?")) {
           chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
@@ -298,9 +353,12 @@ function handleWindow(option, keyword){
           })
         }
       } else {
-        $('#error-message').text('no matched tabs');
+        //$('#error-message').text('no matched tabs');
+        //return{"result": CONST_FAIL, "text": "no matched tabs"};
+        insertErrorMessage("no matched tabs");
       }
-    })
+  
+    });
   } else if (option === CONST_URL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
@@ -313,11 +371,14 @@ function handleWindow(option, keyword){
             selectedTabs.length + " tabs to a new window?")) {
           chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
             chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
-          })
+          });
         }
       } else {
-        $('#error-message').text('no matched tabs');
+        //$('#error-message').text('no matched tabs');
+        //return{"result": CONST_FAIL, "text": "no matched tabs"};
+        insertErrorMessage("no matched tabs");
       }
+      
     })
   } else if (option === CONST_TITLE) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
@@ -334,22 +395,39 @@ function handleWindow(option, keyword){
           })
         }
       } else {
-        $('#error-message').text('no matched tabs');
+        //$('#error-message').text('no matched tabs');
+        //return{"result": CONST_FAIL, "text": "no matched tabs"};
+        insertErrorMessage("no matched tabs");
       }
-    })
+      
+    });
+  }else {
+    //return {"result": CONST_FAIL, "text": "Invalid option"};
+    insertErrorMessage("Invalid option");
+
+  }
+  //return {"result": CONST_SUCCESS, "text": ""};
+
+}
+function insertErrorMessage(message){
+  var views = chrome.extension.getViews({type: "popup"});
+  console.log("views.length = " + views.length);
+  for(var i = 0; i < views.length; i++){
+    views[i].document.getElementById('error-message').innerHTML = message;
+
   }
 }
-
 /*
  * function for search
  */
 
 function handleSearch(option, keyword) {
   if (emptyKeyword(keyword)){
+    //return{"result": CONST_FAIL, "text": "input any keyword"};
+    insertErrorMessage("input any keyword");
     return;
   }
   var tabsIndex = [];
-
   chrome.tabs.query({currentWindow: true}, function (tabList) {
     if (option == CONST_ALL) {
       for (var i = 0; i < tabList.length; i++) {
@@ -370,15 +448,20 @@ function handleSearch(option, keyword) {
         }
       }
     }
-
+    console.log('tabsIndex.length = ' + tabsIndex.length);
     if (tabsIndex.length == 1) {
       chrome.tabs.highlight({'tabs': tabsIndex});
     } else if (tabsIndex.length == 0) {
-      $('#error-message').text('no matched tabs');
+      //$('#error-message').text('no matched tabs');
+      console.log('No matched tabs');
+      //result = {"result": CONST_FAIL, "text": "no matched tabs"};
+      insertErrorMessage("no matched tabs");
     } else {
       handlePreview(tabsIndex);
     }
+    
   });
+
 }
 
 /*
@@ -388,6 +471,8 @@ function handleSearch(option, keyword) {
 function handlePreview(indexArr) {
   var params = indexArr ? '?index=' + indexArr : '';
   window.location.href = "preview.html" + params;
+
+
 }
 
 /*
@@ -406,7 +491,8 @@ function handleSave(option, keyword) {
     });
   } else if (option == CONST_URL){
     if (emptyKeyword(keyword)){
-      return;
+      //return{"result": CONST_FAIL, "text": "input any keyword"};
+      insertErrorMessage("input any keyword");
     }
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       var saveList = [];
@@ -419,7 +505,8 @@ function handleSave(option, keyword) {
     });
   } else if (option == CONST_TITLE){
     if (emptyKeyword(keyword)){
-      return;
+      //return{"result": CONST_FAIL, "text": "input any keyword"};
+      insertErrorMessage("input any keyword");
     }
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       var saveList = [];
@@ -430,7 +517,11 @@ function handleSave(option, keyword) {
       }
       saveUrlToLocalStorage(saveList);
     });
+  }else {
+    insertErrorMessage("Invalid option");
+
   }
+
 }
 
 function saveUrlToLocalStorage(saveList){
@@ -440,7 +531,9 @@ function saveUrlToLocalStorage(saveList){
     localStorage.setItem(localKey, JSON.stringify(saveList));
     window.location.href = "save_list_name.html?name=" + localKey;
   } else {
-    $('#error-message').text('no matched tabs');
+    //$('#error-message').text('no matched tabs');
+    //return{"result": CONST_FAIL, "text": "no matched tabs"};
+    insertErrorMessage("no matched tabs");
   }
 }
 
@@ -450,7 +543,8 @@ function saveUrlToLocalStorage(saveList){
 
 function handleMerge(option, keyword) {
   if (emptyKeyword(keyword)) {
-    return;
+    //return{"result": CONST_FAIL, "text": "input any keyword"};
+    insertErrorMessage("input any keyword");
   }
 
   chrome.tabs.query({"currentWindow": true}, function (tabs) {
@@ -489,6 +583,8 @@ function handleMerge(option, keyword) {
     }
     window.close();
   });
+
+
 }
 
 
@@ -496,48 +592,32 @@ function handleMerge(option, keyword) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function addToCollection(currTabId, currTime){
+  tabsCollection[currTabId] = currTime;
 
-var windows_collection = {};
-
-
-//Add a listener when the extension is firstly installed
-//to initialize windows_collection entry.
-chrome.runtime.onInstalled.addListener(function(details){
-  chrome.tabs.query({}, function(tabs) {
-    var currTime = Date.now();
-    for(var i = 0; i < tabs.length; i++){
-      if(!(tabs[i].windowId in windows_collection)){
-        windows_collection[tabs[i].windowId] = {};
-      }
-      windows_collection[tabs[i].windowId][tabs[i].id] = currTime; 
-    }
-  });
-});
-
-function addToCollection(currWindowId, currTabId, currTime){
-  windows_collection[currWindowId][currTabId] = currTime;
+  //localStorage.setItem("tabsCollection", JSON.stringify(tabsCollection));
 }
 
-function removeFromCollection(currWindowId, currTabId){
-  if(currWindowId in windows_collection){
-    if(currTabId in windows_collection[currWindowId]){
-      delete windows_collection[currWindowId][currTabId];
-    }
+function removeFromCollection(currTabId){
+  if(currTabId in tabsCollection){
+    delete tabsCollection[currTabId];
   }
+  //localStorage.setItem("tabsCollection", JSON.stringify(tabsCollection));
 }
 //Add listeners to be notified when a tab is newly created or activated.
 
-chrome.tabs.onCreated.addListener(function(tabId, changeInfo, tab) {
-  //addToCollection(tab.windowId, tabId, Date.now());
+chrome.tabs.onCreated.addListener(function(tab) {
+  addToCollection(tab.id, Math.floor(Date.now()/10));
 });
 
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
-  //addToCollection(activeInfo.windowId, activeInfo.tabId, Date.now());
+  addToCollection(activeInfo.tabId, Math.floor(Date.now()/10));
 });
 
+
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo){
-  //removeFromCollection(removeInfo.windowId, tabId); 
+  removeFromCollection(tabId); 
 });
 
 chrome.commands.onCommand.addListener(function(command) {
@@ -555,48 +635,16 @@ chrome.commands.onCommand.addListener(function(command) {
 });
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
   console.log("text: " + message.text);
-	parseArg(message.text);
-	/**var option = message.option;
-	var keyword = message.keyword;
-  switch (message.command) {
-    case 'search':
-      handleSearch(option, keyword);
-      break;
-    case 'order':
-			handleOrder(option, keyword);
-      break;
-    case 'open':
-      handleOpen(option, keyword);
-      break;
-    case 'close':
-      handleClose(option, keyword);
-      break;
-    case 'window':
-      handleWindow(option, keyword);
-      break;
-    case 'suspend':
-      handleSuspend(option, keyword);
-      break;
-    case 'save':
-      handleSave(option, keyword);
-      break;
-    case 'preview':
-      handlePreview();
-      break;
-    case 'merge':
-      handleMerge(option, keyword);
-      break;
-  }**/
-  
-
-
+	var result = parseArg(message.text);
+  sendResponse(result);
 
 });
+
 function parseArg(text){
 	var args = text.split(" ");
 	if(args.length < 2 || args.length > 3){
-		return null;
-	}
+	  insertErrorMessage("Not enough arguments");
+  }
 	var command = args[0];
 	var option = args[1].substring(1, args[1].length);
 	var keyword = "";
@@ -604,12 +652,13 @@ function parseArg(text){
 		keyword = args[2];
 	}
 	console.log('parseArg: command- ' + command + ', option- ' + option + ', keyword- ' + keyword);
+  var result = {};
 	switch(command){
     case 'search':
       handleSearch(option, keyword);
       break;
     case 'order':
-			//handleOrder(option, keyword);
+			handleOrder(option, keyword);
       break;
     case 'open':
       handleOpen(option, keyword);
@@ -633,9 +682,8 @@ function parseArg(text){
       handleMerge(option, keyword);
       break;
     default:
-      return null;
+	    insertErrorMessage("Invalid option");
       break;
   }
-
 
 }
