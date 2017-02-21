@@ -1,31 +1,71 @@
 /**
  * This file is for the further features like address bar command.
  */
-
+//
 var CONST_URL = 'url';
 var CONST_TITLE = 'title';
 var CONST_SAVED = 'saved';
 var CONST_ALL = 'all';
-var CONST_VIEW = 'view';
+var CONST_CURRENT = 'current';
 var CONST_TIME = 'time';
-
-
-var CONST_SUCCESS = "success";
-var CONST_FAIL = "fail";
 
 var CONST_INT_MIN = 0;
 
 // This is const variable. Always only append action is allowed.
 var options = {
-  'search': [CONST_URL, CONST_TITLE],
+  'search': [CONST_ALL, CONST_URL, CONST_TITLE],
   'open': [CONST_URL, CONST_SAVED],
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': [CONST_TIME, CONST_TITLE],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'save': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'preview': [CONST_ALL],
+  'save': [CONST_CURRENT, CONST_URL, CONST_TITLE],
+  'preview': [CONST_CURRENT],
   'merge': [CONST_URL, CONST_TITLE],
-  'suspend': ['older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
+  'suspend': ['older', CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
+};
+
+var guideMsg = {
+  'search': {
+    'all': 'Search all tabs with [KEYWORD] in the URL or TITLE',
+    'url': 'Search all tabs with [KEYWORD] in the URL',
+    'title': 'Search all tabs with [KEYWORD] in the TITLE'
+  },
+  'open': {
+    'url': 'Open a new tab with [KEYWORD] as the URL',
+    'saved': 'Open a list of tabs named [KEYWORD]'
+  },
+  'close': {
+    'all': 'Close all tabs with [KEYWORD] in the URL or TITLE',
+    'url': 'Close all tabs with [KEYWORD] in the URL',
+    'title': 'Close all tabs with [KEYWORD] in the TITLE'
+  },
+  'order': {
+    'time': 'Order all tabs in current window by tab\'s activated time',
+    'title': 'Order all tabs in current window by tab\'s title'
+  },
+  'window': {
+    'all': 'Separate all tabs with [KEYWORD] in the URL or TITLE with a new window',
+    'url': 'Separate all tabs with [KEYWORD] in the URL with a new window',
+    'title': 'Separate all tabs with [KEYWORD] in the TITLE with a new window'
+  },
+  'save': {
+    'current': 'Save all tabs in current window',
+    'url': 'Save all tabs with [KEYWORD] in the URL',
+    'title': 'Save all tabs with [KEYWORD] in the TITLE'
+  },
+  'preview': {
+    'current': 'Show all tabs in current window'
+  },
+  'merge': {
+    'url': 'Merge all tabs with [KEYWORD] in the URL',
+    'title': 'Merge all tabs with [KEYWORD] in the TITLE'
+  },
+  'suspend': {
+    'older' : 'Suspend all tabs ...',
+    'all': 'Suspend all tabs with [KEYWORD] in the URL or TITLE',
+    'url': 'Suspend all tabs with [KEYWORD] in the URL',
+    'title': 'Suspend all tabs with [KEYWORD] in the TITLE'
+  }
 };
 
 
@@ -140,21 +180,6 @@ function handleSuspend(option, keyword){
  * function for order
  */
 
-function sortByTime(tabs, tabCollection){
-  var big = tabs[0].id;
-  for(var j = tabs.length; j > 0; j--){
-    for(var i = 1; i <= j-1; i++){
-      if(parseInt(tabCollection[tabs[i-1].id]) > parseInt(tabCollection[tabs[i].id])) big = tabs[i].id;
-
-    }
-    chrome.tabs.move(big, {"index": -1});
-  }
-
-
-
-
-}
-
 function handleOrder(option, keyword){
 	if(option === CONST_TIME){
 	  //TODO: develop time option 
@@ -229,7 +254,8 @@ function handleOpen(option, keyword) {
   if (emptyKeyword(keyword)){
     //return {"result": CONST_FAIL, "text": "input any keyword"};
     insertErrorMessage("input any keyword");
-  }
+  	return;
+	}
   if (option === CONST_URL) {
     if (!(keyword.substr(0, 8) === 'https://'
       || keyword.substr(0, 7) === 'http://')) {
@@ -265,8 +291,8 @@ function handleOpen(option, keyword) {
 
 function handleClose(option, keyword) {
   if (emptyKeyword(keyword)){
-    //return{"result": CONST_FAIL, "text": "input any keyword"};
     insertErrorMessage("input any keyword");
+    return;
   }
   var selectedTabs = [];
   if(option === CONST_ALL){
@@ -278,12 +304,9 @@ function handleClose(option, keyword) {
       }
       if(selectedTabs.length === 0){
         //$('#error-message').text('no matched tabs');
-        //return{"result": CONST_FAIL, "text": "no matched tabs"};
         insertErrorMessage("no matched tabs");
       } else {
-        if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
-          chrome.tabs.remove(selectedTabs);
-        }
+        chrome.tabs.remove(selectedTabs);
       }
     });
   } else if (option === CONST_URL) {
@@ -295,12 +318,9 @@ function handleClose(option, keyword) {
       }
       if(selectedTabs.length === 0){
         //$('#error-message').text('no matched tabs');
-        //return{"result": CONST_FAIL, "text": "no matched tabs"};
         insertErrorMessage("no matched tabs");
       } else {
-        if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
-          chrome.tabs.remove(selectedTabs);
-        }
+        chrome.tabs.remove(selectedTabs);
       }
     });
   } else if (option === CONST_TITLE) {
@@ -312,103 +332,83 @@ function handleClose(option, keyword) {
       }
       if(selectedTabs.length === 0){
         //$('#error-message').text('no matched tabs');
-        //return{"result": CONST_FAIL, "text": "no matched tabs"};
         insertErrorMessage("no matched tabs");
       } else {
-        if(confirm("Do you really want to close selected " + selectedTabs.length + " tabs?")){
-          chrome.tabs.remove(selectedTabs);
-        }
+        chrome.tabs.remove(selectedTabs);
       }
-    });
-  } else {
-    //return {"result": CONST_FAIL, "text": "Invalid option"};
-    insertErrorMessage("Invalid option");
-
-  }
-  
-}
-
-/*
- * function for window
- */
-
-function handleWindow(option, keyword){
-  if (emptyKeyword(keyword)){
-    //return{"result": CONST_FAIL, "text": "input any keyword"};
-    insertErrorMessage("input any keyword");
-  }
-  var selectedTabs = [];
-  if(option === CONST_ALL){
-    chrome.tabs.query({"currentWindow": true}, function (tabs) {
-      for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].url.indexOf(keyword) > -1 || tabs[i].title.indexOf(keyword) > -1) {
-          selectedTabs.push(tabs[i].id);
-        }
-      }
-      console.log('handleWindow: CONT_ALL: selectedTabs.length: ' + selectedTabs.length);
-      if (selectedTabs.length != 0) {
-        if(confirm("Do you really want to move selected " + selectedTabs.length + " tabs to a new window?")) {
-          chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
-            chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
-          })
-        }
-      } else {
-        //$('#error-message').text('no matched tabs');
-        //return{"result": CONST_FAIL, "text": "no matched tabs"};
-        insertErrorMessage("no matched tabs");
-      }
-  
-    });
-  } else if (option === CONST_URL) {
-    chrome.tabs.query({"currentWindow": true}, function (tabs) {
-      for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].url.indexOf(keyword) > -1) {
-          selectedTabs.push(tabs[i].id);
-        }
-      }
-      if (selectedTabs.length != 0) {
-        if(confirm("Do you really want to move selected " +
-            selectedTabs.length + " tabs to a new window?")) {
-          chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
-            chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
-          });
-        }
-      } else {
-        //$('#error-message').text('no matched tabs');
-        //return{"result": CONST_FAIL, "text": "no matched tabs"};
-        insertErrorMessage("no matched tabs");
-      }
-      
-    })
-  } else if (option === CONST_TITLE) {
-    chrome.tabs.query({"currentWindow": true}, function (tabs) {
-      for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].title.indexOf(keyword) > -1) {
-          selectedTabs.push(tabs[i].id);
-        }
-      }
-      if (selectedTabs.length != 0) {
-        if(confirm("Do you really want to move selected " +
-            selectedTabs.length + " tabs to a new window?")) {
-          chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
-            chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
-          })
-        }
-      } else {
-        //$('#error-message').text('no matched tabs');
-        //return{"result": CONST_FAIL, "text": "no matched tabs"};
-        insertErrorMessage("no matched tabs");
-      }
-      
     });
   }else {
     //return {"result": CONST_FAIL, "text": "Invalid option"};
     insertErrorMessage("Invalid option");
 
   }
-  //return {"result": CONST_SUCCESS, "text": ""};
 
 }
+/*
+ * function for window
+ */
+function handleWindow(option, keyword){
+  if (emptyKeyword(keyword)){
+    insertErrorMessage("input any keyword");
+    return;
+  }
+  var selectedTabs = [];
+  if(option === CONST_ALL){
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].url.indexOf(keyword) > -1 || tabs[i].title.indexOf(keyword) > -1) {
+          selectedTabs.push(tabs[i].id);
+        }
+      }
+      if (selectedTabs.length != 0) {
+        chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
+          chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
+        });
+      } else {
+        //$('#error-message').text('no matched tabs');
+        insertErrorMessage("no matched tabs");
+      }
+    })
+  } else if (option === CONST_URL) {
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].url.indexOf(keyword) > -1) {
+          selectedTabs.push(tabs[i].id);
+        }
+      }
+      if (selectedTabs.length != 0) {
+        chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
+          chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
+        });
+      } else {
+       // $('#error-message').text('no matched tabs');
+        insertErrorMessage("no matched tabs");
+      }
+    });
+  } else if (option === CONST_TITLE) {
+    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].title.indexOf(keyword) > -1) {
+          selectedTabs.push(tabs[i].id);
+        }
+      }
+      if (selectedTabs.length != 0) {
+        chrome.windows.create({"tabId": selectedTabs[0]}, function (window) {
+          chrome.tabs.move(selectedTabs, {"windowId": window.id, "index": -1});
+        });
+      } else {
+        //$('#error-message').text('no matched tabs');
+        insertErrorMessage("no matched tabs");
+      }
+    });
+  }else {
+    //return {"result": CONST_FAIL, "text": "Invalid option"};
+    insertErrorMessage("Invalid option");
+
+  }
+
+}
+
 function insertErrorMessage(message){
   var views = chrome.extension.getViews({type: "popup"});
   console.log("views.length = " + views.length);
@@ -423,11 +423,11 @@ function insertErrorMessage(message){
 
 function handleSearch(option, keyword) {
   if (emptyKeyword(keyword)){
-    //return{"result": CONST_FAIL, "text": "input any keyword"};
     insertErrorMessage("input any keyword");
     return;
   }
   var tabsIndex = [];
+
   chrome.tabs.query({currentWindow: true}, function (tabList) {
     if (option == CONST_ALL) {
       for (var i = 0; i < tabList.length; i++) {
@@ -448,22 +448,17 @@ function handleSearch(option, keyword) {
         }
       }
     }
-    console.log('tabsIndex.length = ' + tabsIndex.length);
+
     if (tabsIndex.length == 1) {
       chrome.tabs.highlight({'tabs': tabsIndex});
     } else if (tabsIndex.length == 0) {
       //$('#error-message').text('no matched tabs');
-      console.log('No matched tabs');
-      //result = {"result": CONST_FAIL, "text": "no matched tabs"};
       insertErrorMessage("no matched tabs");
     } else {
       handlePreview(tabsIndex);
     }
-    
   });
-
 }
-
 /*
  * function for preview
  */
@@ -480,39 +475,39 @@ function handlePreview(indexArr) {
  */
 
 function handleSave(option, keyword) {
-  if (option == CONST_ALL) {
+  if (option == CONST_CURRENT) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       var saveList = [];
 
       for(var i = 0; i < tabs.length; i++){
-        saveList.push({url : tabs[i].url, title : tabs[i].title });
+        saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
       }
       saveUrlToLocalStorage(saveList);
     });
   } else if (option == CONST_URL){
     if (emptyKeyword(keyword)){
-      //return{"result": CONST_FAIL, "text": "input any keyword"};
       insertErrorMessage("input any keyword");
+      return;
     }
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.indexOf(keyword) > -1) {
-          saveList.push({url : tabs[i].url, title : tabs[i].title });
+          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
         }
       }
       saveUrlToLocalStorage(saveList);
     });
   } else if (option == CONST_TITLE){
     if (emptyKeyword(keyword)){
-      //return{"result": CONST_FAIL, "text": "input any keyword"};
       insertErrorMessage("input any keyword");
+      return;
     }
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.indexOf(keyword) > -1) {
-          saveList.push({url : tabs[i].url, title : tabs[i].title });
+          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
         }
       }
       saveUrlToLocalStorage(saveList);
@@ -521,7 +516,6 @@ function handleSave(option, keyword) {
     insertErrorMessage("Invalid option");
 
   }
-
 }
 
 function saveUrlToLocalStorage(saveList){
@@ -532,7 +526,6 @@ function saveUrlToLocalStorage(saveList){
     window.location.href = "save_list_name.html?name=" + localKey;
   } else {
     //$('#error-message').text('no matched tabs');
-    //return{"result": CONST_FAIL, "text": "no matched tabs"};
     insertErrorMessage("no matched tabs");
   }
 }
@@ -543,8 +536,8 @@ function saveUrlToLocalStorage(saveList){
 
 function handleMerge(option, keyword) {
   if (emptyKeyword(keyword)) {
-    //return{"result": CONST_FAIL, "text": "input any keyword"};
     insertErrorMessage("input any keyword");
+    return;
   }
 
   chrome.tabs.query({"currentWindow": true}, function (tabs) {
@@ -553,13 +546,13 @@ function handleMerge(option, keyword) {
     for(var i = 0; i < tabs.length; i++) {
       if((option == CONST_URL && tabs[i].url.includes(keyword)) || (option == CONST_TITLE && tabs[i].title.includes(keyword))) {
         if(!tabs[i].url.includes(chrome.runtime.id)) {
-          mergeList.push({url : tabs[i].url, title : tabs[i].title});
+          mergeList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl});
           chrome.tabs.remove(tabs[i].id);
         }
       }
     }
 
-    var mergeListName = '_'+option+'_'+keyword;
+    var mergeListName = '_hanzogak_merge_'+option+'_'+keyword;
 
     if(localStorage.getItem(mergeListName) != null) {
       var existMergeList = JSON.parse(localStorage.getItem(mergeListName));
@@ -583,10 +576,7 @@ function handleMerge(option, keyword) {
     }
     window.close();
   });
-
-
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

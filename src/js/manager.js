@@ -3,11 +3,9 @@ var CONST_URL = 'url';
 var CONST_TITLE = 'title';
 var CONST_SAVED = 'saved';
 var CONST_ALL = 'all';
-var CONST_VIEW = 'view';
+var CONST_CURRENT = 'current';
 var CONST_TIME = 'time';
 
-var CONST_SUCCESS = "success";
-var CONST_FAIL = "fail";
 // This is const variable. Always only append action is allowed.
 var options = {
   'search': [CONST_ALL, CONST_URL, CONST_TITLE],
@@ -15,11 +13,56 @@ var options = {
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
   'order': [CONST_TIME, CONST_TITLE],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'save': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'preview': [CONST_ALL],
+  'save': [CONST_CURRENT, CONST_URL, CONST_TITLE],
+  'preview': [CONST_CURRENT],
   'merge': [CONST_URL, CONST_TITLE],
-  'suspend': ['older',CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
+  'suspend': ['older', CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
 };
+
+var guideMsg = {
+  'search': {
+    'all': 'Search all tabs with [KEYWORD] in the URL or TITLE',
+    'url': 'Search all tabs with [KEYWORD] in the URL',
+    'title': 'Search all tabs with [KEYWORD] in the TITLE'
+  },
+  'open': {
+    'url': 'Open a new tab with [KEYWORD] as the URL',
+    'saved': 'Open a list of tabs named [KEYWORD]'
+  },
+  'close': {
+    'all': 'Close all tabs with [KEYWORD] in the URL or TITLE',
+    'url': 'Close all tabs with [KEYWORD] in the URL',
+    'title': 'Close all tabs with [KEYWORD] in the TITLE'
+  },
+  'order': {
+    'time': 'Order all tabs in current window by tab\'s activated time',
+    'title': 'Order all tabs in current window by tab\'s title'
+  },
+  'window': {
+    'all': 'Separate all tabs with [KEYWORD] in the URL or TITLE with a new window',
+    'url': 'Separate all tabs with [KEYWORD] in the URL with a new window',
+    'title': 'Separate all tabs with [KEYWORD] in the TITLE with a new window'
+  },
+  'save': {
+    'current': 'Save all tabs in current window',
+    'url': 'Save all tabs with [KEYWORD] in the URL',
+    'title': 'Save all tabs with [KEYWORD] in the TITLE'
+  },
+  'preview': {
+    'current': 'Show all tabs in current window'
+  },
+  'merge': {
+    'url': 'Merge all tabs with [KEYWORD] in the URL',
+    'title': 'Merge all tabs with [KEYWORD] in the TITLE'
+  },
+  'suspend': {
+    'older' : 'Suspend all tabs ...',
+    'all': 'Suspend all tabs with [KEYWORD] in the URL or TITLE',
+    'url': 'Suspend all tabs with [KEYWORD] in the URL',
+    'title': 'Suspend all tabs with [KEYWORD] in the TITLE'
+  }
+};
+
 
 
 /*
@@ -605,4 +648,9 @@ window.addEventListener("message", function(event) {
     });
   }
 }, false);
+function showGuideLine(){
+  var command = $('#command').val();
+  var option = $('#option').val();
 
+  $('#guideline').text(guideMsg[command][option]);
+}
