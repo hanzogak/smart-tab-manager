@@ -8,7 +8,6 @@ $(function () {
   var localValue = localStorage.getItem(localKey);
   localStorage.removeItem(localKey);
 
-  console.log(localKey + "," + localValue);
   $('#name-submit').click(nameSubmit);
   $('#newName').keydown(function (e) {
     if (e.keyCode == 13) {

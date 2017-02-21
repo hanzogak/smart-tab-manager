@@ -45,7 +45,6 @@ function handleSuspend(option, keyword) {
       for(var i = 0; i < tabs.length; i++){
         var lowercase_url = tabs[i].url.toLowerCase();
         if(lowercase_url.includes(lowercase_keyword) && !tabs[i].discarded){
-          console.log('title: ' + tabs[i].title + ', id: ' + tabs[i].id);
           chrome.tabs.discard(tabs[i].id);
           discarded_num++;
         }
@@ -167,11 +166,12 @@ function handleClose(option, keyword) {
     insertErrorMessage("input any keyword");
     return;
   }
+  keyword = keyword.toLowerCase();
   var selectedTabs = [];
   if(option === CONST_ALL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].url.indexOf(keyword) > -1 || tabs[i].title.indexOf(keyword) > -1) {
+        if (tabs[i].url.toLowerCase().indexOf(keyword) > -1 || tabs[i].title.toLowerCase().indexOf(keyword) > -1) {
           selectedTabs.push(tabs[i].id);
         }
       }
@@ -184,7 +184,7 @@ function handleClose(option, keyword) {
   } else if (option === CONST_URL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].url.indexOf(keyword) > -1) {
+        if (tabs[i].url.toLowerCase().indexOf(keyword) > -1) {
           selectedTabs.push(tabs[i].id);
         }
       }
@@ -197,7 +197,7 @@ function handleClose(option, keyword) {
   } else if (option === CONST_TITLE) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].title.indexOf(keyword) > -1) {
+        if (tabs[i].title.toLowerCase().indexOf(keyword) > -1) {
           selectedTabs.push(tabs[i].id);
         }
       }
@@ -220,11 +220,12 @@ function handleWindow(option, keyword) {
     insertErrorMessage("input any keyword");
     return;
   }
+  keyword = keyword.toLowerCase();
   var selectedTabs = [];
   if(option === CONST_ALL){
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].url.indexOf(keyword) > -1 || tabs[i].title.indexOf(keyword) > -1) {
+        if (tabs[i].url.toLowerCase().indexOf(keyword) > -1 || tabs[i].title.toLowerCase().indexOf(keyword) > -1) {
           selectedTabs.push(tabs[i].id);
         }
       }
@@ -239,7 +240,7 @@ function handleWindow(option, keyword) {
   } else if (option === CONST_URL) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].url.indexOf(keyword) > -1) {
+        if (tabs[i].url.toLowerCase().indexOf(keyword) > -1) {
           selectedTabs.push(tabs[i].id);
         }
       }
@@ -254,7 +255,7 @@ function handleWindow(option, keyword) {
   } else if (option === CONST_TITLE) {
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].title.indexOf(keyword) > -1) {
+        if (tabs[i].title.toLowerCase().indexOf(keyword) > -1) {
           selectedTabs.push(tabs[i].id);
         }
       }
@@ -280,23 +281,24 @@ function handleSearch(option, keyword) {
     return;
   }
   var tabsIndex = [];
+  keyword = keyword.toLowerCase();
 
   chrome.tabs.query({currentWindow: true}, function (tabList) {
     if (option == CONST_ALL) {
       for (var i = 0; i < tabList.length; i++) {
-        if (tabList[i].url.includes(keyword) || tabList[i].title.includes(keyword)) {
+        if (tabList[i].url.toLowerCase().includes(keyword) || tabList[i].title.toLowerCase().includes(keyword)) {
           tabsIndex.push(i);
         }
       }
     } else if (option == CONST_URL) {
       for (var i = 0; i < tabList.length; i++) {
-        if (tabList[i].url.includes(keyword)) {
+        if (tabList[i].url.toLowerCase().includes(keyword)) {
           tabsIndex.push(i);
         }
       }
     } else if (option == CONST_TITLE) {
       for (var i = 0; i < tabList.length; i++) {
-        if (tabList[i].title.includes(keyword)) {
+        if (tabList[i].title.toLowerCase().includes(keyword)) {
           tabsIndex.push(i);
         }
       }
@@ -319,7 +321,7 @@ function handleSearch(option, keyword) {
  * function for preview
  */
 function handlePreview(indexArr) {
-  var params = indexArr ? '?index=' + indexArr : '?index=7,8';
+  var params = indexArr ? '?index=' + indexArr : '';
   var url = 'chrome-extension://' + chrome.runtime.id + '/src/html/preview.html' + params;
   var views = chrome.extension.getViews({type: "popup"});
 
@@ -350,10 +352,11 @@ function handleSave(option, keyword) {
       insertErrorMessage("input any keyword");
       return;
     }
+    keyword = keyword.toLowerCase();
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].url.indexOf(keyword) > -1) {
+        if (tabs[i].url.toLowerCase().indexOf(keyword) > -1) {
           saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
         }
       }
@@ -364,10 +367,11 @@ function handleSave(option, keyword) {
       insertErrorMessage("input any keyword");
       return;
     }
+    keyword = keyword.toLowerCase();
     chrome.tabs.query({"currentWindow": true}, function (tabs) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
-        if (tabs[i].title.indexOf(keyword) > -1) {
+        if (tabs[i].title.toLowerCase().indexOf(keyword) > -1) {
           saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
         }
       }
@@ -407,12 +411,13 @@ function handleMerge(option, keyword) {
     insertErrorMessage("input any keyword");
     return;
   }
+  var keywordLower = keyword.toLowerCase();
 
   chrome.tabs.query({"currentWindow": true}, function (tabs) {
     var mergeList = [];
 
     for(var i = 0; i < tabs.length; i++) {
-      if((option == CONST_URL && tabs[i].url.includes(keyword)) || (option == CONST_TITLE && tabs[i].title.includes(keyword))) {
+      if((option == CONST_URL && tabs[i].url.toLowerCase().includes(keywordLower)) || (option == CONST_TITLE && tabs[i].title.toLowerCase().includes(keywordLower))) {
         if(!tabs[i].url.includes(chrome.runtime.id)) {
           mergeList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl});
           chrome.tabs.remove(tabs[i].id);
@@ -481,7 +486,6 @@ chrome.runtime.onInstalled.addListener(function () {
     var currTime = CONST_INT_MIN;
     for(var i = 0; i < tabs.length; i++){
       tabsCollection[tabs[i].id] = currTime;
-      // TODO: 초기화
     }
   });
 });
@@ -491,20 +495,17 @@ chrome.tabs.query({}, function (tabs) {
   var currTime = CONST_INT_MIN;
   for(var i = 0; i < tabs.length; i++){
     tabsCollection[tabs[i].id] = currTime;
-    // TODO: 초기화 (background page 꺼질 때 대비
   }
 });
 
 function addToCollection(currTabId, currTime){
   tabsCollection[currTabId] = currTime;
-  //localStorage.setItem("tabsCollection", JSON.stringify(tabsCollection));
 }
 
 function removeFromCollection(currTabId){
   if(currTabId in tabsCollection){
     delete tabsCollection[currTabId];
   }
-  //localStorage.setItem("tabsCollection", JSON.stringify(tabsCollection));
 }
 //Add listeners to be notified when a tab is newly created or activated.
 

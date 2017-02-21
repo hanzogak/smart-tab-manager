@@ -21,16 +21,15 @@ var CONST_OLDER = '-older';
 // This is const variable. Always only append action is allowed.
 var optionList = {
   'search': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'open': [CONST_URL, CONST_SAVED],
+  'open': [CONST_SAVED, CONST_URL],
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'order': [CONST_TIME, CONST_TITLE],
+  'order': [CONST_URL, CONST_TITLE, CONST_TIME],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
   'save': [CONST_CURRENT, CONST_URL, CONST_TITLE],
   'preview': [CONST_CURRENT],
   'merge': [CONST_URL, CONST_TITLE],
-  'suspend': [CONST_OLDER, CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
+  'suspend': [CONST_OLDER, CONST_ALL, CONST_URL, CONST_TITLE]
 };
-
 
 var saveList;
 window.postMessage({ type: "savelist request" }, "*");
@@ -41,11 +40,6 @@ window.addEventListener("message", function(event) {
     }
     if (event.data.type && (event.data.type == 'savelist answer')) {
         saveList = event.data.src;
-        if(saveList == null){
-          console.log('saveList empty');
-        } else {
-          console.log(saveList.length + saveList.toString());
-        }
     }
 }, false);
 
@@ -105,7 +99,6 @@ function previewCommand() {
 
     //auto complete
     if(e.which === 39 && word != ''){  //(->)
-        console.log(stage + ","+pre+ "," + word);
       if (stage == 0 || stage == 1){
           e.preventDefault();
           inputDiv.val(word + " ");

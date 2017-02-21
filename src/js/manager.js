@@ -5,18 +5,19 @@ var CONST_SAVED = 'saved';
 var CONST_ALL = 'all';
 var CONST_CURRENT = 'current';
 var CONST_TIME = 'time';
+var CONST_OLDER = 'older';
 
 // This is const variable. Always only append action is allowed.
 var options = {
   'search': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'open': [CONST_URL, CONST_SAVED],
+  'open': [CONST_SAVED, CONST_URL],
   'close': [CONST_ALL, CONST_URL, CONST_TITLE],
-  'order': [CONST_TIME, CONST_TITLE],
+  'order': [CONST_URL, CONST_TITLE, CONST_TIME],
   'window': [CONST_ALL, CONST_URL, CONST_TITLE],
   'save': [CONST_CURRENT, CONST_URL, CONST_TITLE],
   'preview': [CONST_CURRENT],
   'merge': [CONST_URL, CONST_TITLE],
-  'suspend': ['older', CONST_ALL, CONST_URL, CONST_TITLE] // how to indicate all tabs?
+  'suspend': [CONST_OLDER, CONST_ALL, CONST_URL, CONST_TITLE]
 };
 
 var guideMsg = {
@@ -35,8 +36,9 @@ var guideMsg = {
     'title': 'Close all tabs with [KEYWORD] in the TITLE'
   },
   'order': {
-    'time': 'Order all tabs in current window by tab\'s activated time',
-    'title': 'Order all tabs in current window by tab\'s title'
+    'url': 'Order all tabs in current window by tab\'s URL',
+    'title': 'Order all tabs in current window by tab\'s TITLE',
+    'time': 'Order all tabs in current window by tab\'s activated time'
   },
   'window': {
     'all': 'Separate all tabs with [KEYWORD] in the URL or TITLE with a new window',
@@ -56,12 +58,13 @@ var guideMsg = {
     'title': 'Merge all tabs with [KEYWORD] in the TITLE'
   },
   'suspend': {
-    'older' : 'Suspend all tabs ...',
+    'older' : 'Suspend all tabs used [KEYWORD] minute(s) ago',
     'all': 'Suspend all tabs with [KEYWORD] in the URL or TITLE',
     'url': 'Suspend all tabs with [KEYWORD] in the URL',
     'title': 'Suspend all tabs with [KEYWORD] in the TITLE'
   }
 };
+
 /*
  * function that start with dom starting
  */
@@ -146,7 +149,6 @@ function commandSubmit() {
 /*
 * function for auto complete keyword input box
 */
-
 function autocomplete(){
   var command = $('#command').val();
   var option = $('#option').val();

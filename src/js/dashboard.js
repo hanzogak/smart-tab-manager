@@ -60,7 +60,6 @@ $(function () {
 
   // call saved lists from local storage
   for (var i = 0; i < localStorage.length; i++) {
-    // TODO: prevent local storage for merge and time
     if (localStorage.key(i).indexOf('_hanzogak_') != 0) {
       // append list name to left side
       var listName = $('.list-name').first().clone().removeClass('preview').removeClass('active');
