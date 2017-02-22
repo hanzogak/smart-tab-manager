@@ -43,6 +43,8 @@
       text-align: left; }
       #smart-tab-manager-command-box > #command-box #smart-tab-manager-input:focus, #smart-tab-manager-command-box > #command-box #smart-tab-manager-preview:focus {
         outline: none !important; }
+    #smart-tab-manager-command-box > #command-box #smart-tab-manager-input {
+      color: #424242 !important; }
     #smart-tab-manager-command-box > #command-box #smart-tab-manager-preview {
       color: #bdbdbd !important; }
 

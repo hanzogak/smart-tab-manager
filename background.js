@@ -343,7 +343,7 @@ function handleSave(option, keyword) {
       var saveList = [];
 
       for(var i = 0; i < tabs.length; i++){
-        saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
+        saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl, screenUrl : tabsScreenShot[tabs[i].id]});
       }
       saveUrlToLocalStorage(saveList);
     });
@@ -357,7 +357,7 @@ function handleSave(option, keyword) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].url.toLowerCase().indexOf(keyword) > -1) {
-          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
+          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl, screenUrl : tabsScreenShot[tabs[i].id]});
         }
       }
       saveUrlToLocalStorage(saveList);
@@ -372,7 +372,7 @@ function handleSave(option, keyword) {
       var saveList = [];
       for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].title.toLowerCase().indexOf(keyword) > -1) {
-          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl });
+          saveList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl, screenUrl : tabsScreenShot[tabs[i].id]});
         }
       }
       saveUrlToLocalStorage(saveList);
@@ -419,7 +419,7 @@ function handleMerge(option, keyword) {
     for(var i = 0; i < tabs.length; i++) {
       if((option == CONST_URL && tabs[i].url.toLowerCase().includes(keywordLower)) || (option == CONST_TITLE && tabs[i].title.toLowerCase().includes(keywordLower))) {
         if(!tabs[i].url.includes(chrome.runtime.id)) {
-          mergeList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl});
+          mergeList.push({url : tabs[i].url, title : tabs[i].title, favIconUrl : tabs[i].favIconUrl, screenUrl : tabsScreenShot[tabs[i].id]});
           chrome.tabs.remove(tabs[i].id);
         }
       }
@@ -502,8 +502,17 @@ chrome.runtime.onInstalled.addListener(function () {
 function addToCollection(currTabId, currTime) {
   tabsCollection[currTabId] = currTime;
 
-  chrome.tabs.captureVisibleTab(function(screenUrl) {
-    tabsScreenShot[currTabId] = screenUrl;
+  chrome.tabs.captureVisibleTab({format: 'png'}, function(screenUrl) {
+    var canvas = document.createElement("canvas");
+    canvas.width = 160;
+    canvas.height = 100;
+
+    var image = new Image();
+    image.src = screenUrl;
+
+    canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+
+    tabsScreenShot[currTabId] = canvas.toDataURL();
   });
 }
 
