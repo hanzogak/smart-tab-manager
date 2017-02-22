@@ -486,7 +486,7 @@ function insertErrorMessage(message) {
   }
 }
 
-////////////////////////////////////////TIME SETTING////////////////////////////////////////
+////////////////////////////////////////TIME & SCREEN SETTING////////////////////////////////////////
 
 var CONST_INT_MIN = 0;
 
@@ -512,7 +512,9 @@ chrome.runtime.onInstalled.addListener(function () {
 
 function addToCollection(currTabId, currTime) {
   tabsCollection[currTabId] = currTime;
+}
 
+function addToScreenCollection(currTabId) {
   chrome.tabs.captureVisibleTab({format: 'png'}, function(screenUrl) {
     var canvas = document.createElement("canvas");
     canvas.width = 160;
@@ -531,7 +533,9 @@ function removeFromCollection(currTabId) {
   if(currTabId in tabsCollection){
     delete tabsCollection[currTabId];
   }
+}
 
+function removeFromScreenCollection(currTabId) {
   if(currTabId in tabsScreenShot){
     delete tabsScreenShot[currTabId];
   }
@@ -544,10 +548,16 @@ chrome.tabs.onCreated.addListener(function(tab) {
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
   addToCollection(activeInfo.tabId, Math.floor(Date.now()/10));
+  addToScreenCollection(activeInfo.tabId);
+});
+
+chrome.tabs.onHighlighted.addListener(function (activeInfo) {
+  addToScreenCollection(activeInfo.tabId);
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-  removeFromCollection(tabId); 
+  removeFromCollection(tabId);
+  removeFromScreenCollection(tabId);
 });
 
 ////////////////////////////////////////COMMAND BOX////////////////////////////////////////
