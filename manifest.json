@@ -21,7 +21,8 @@
   "permissions": [
     "tabs",
     "storage",
-    "activeTab"
+    "activeTab",
+    "<all_urls>"
   ],
   "content_scripts": [
     {

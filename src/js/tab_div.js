@@ -11,8 +11,9 @@ function createTabDiv(tabInfo) {
     '<div class="delete"></div>' +
     '<div class="cover">' +
     '<img src="../../resources/hanzo_128.png" class="favicon">' +
-    '<div class="title"></div>' +
-    '</div>' + '<div class="url"></div>' +
+    '<div class="title"></div>' + '</div>' +
+    '<div class="content"><img src="../../resources/default_screen.png" class="screen"></div>' +
+    '<div class="url hide">' + '</div>' +
     '</div>');
 
   newTabDiv.find('.id').text(tabInfo.id);
@@ -21,6 +22,11 @@ function createTabDiv(tabInfo) {
 
   if(tabInfo.favIconUrl) {
     newTabDiv.find('.favicon').attr('src', tabInfo.favIconUrl);
+  }
+
+  var screenUrl = chrome.extension.getBackgroundPage().tabsScreenShot[tabInfo.id];
+  if(screenUrl) {
+    newTabDiv.find('.screen').attr('src', screenUrl);
   }
 
   if(tabInfo.highlighted) {
