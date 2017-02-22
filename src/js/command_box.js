@@ -49,6 +49,7 @@ if($('#smart-tab-manager-command-box').length == 0) {
     type: 'GET',
     success: function (data) {
       $('body').append($(data)).css('overflow-y', 'hidden');
+      $('#command-box').find('.icon').attr('src', 'chrome-extension://' + chrome.runtime.id + '/resources/favicon.png');
 
       $('#smart-tab-manager-input').focus();
 

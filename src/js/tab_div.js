@@ -52,8 +52,9 @@ function createStorageTabDiv(tabInfo, keyName) {
     '<div class="delete"></div>' +
     '<div class="cover">' +
     '<img src="../../resources/hanzo_128.png" class="favicon">' +
-    '<div class="title"></div>' +
-    '</div>' + '<div class="url"></div>' +
+    '<div class="title"></div>' + '</div>' +
+    '<div class="content"><img src="../../resources/default_screen.png" class="screen"></div>' +
+    '<div class="url hide">' + '</div>' +
     '</div>');
 
   newTabDiv.find('.title').text(tabInfo.title);
@@ -61,6 +62,10 @@ function createStorageTabDiv(tabInfo, keyName) {
 
   if(tabInfo.favIconUrl) {
     newTabDiv.find('.favicon').attr('src', tabInfo.favIconUrl);
+  }
+
+  if(tabInfo.screenUrl) {
+    newTabDiv.find('.screen').attr('src', tabInfo.screenUrl);
   }
 
   newTabDiv.click(function(e) {

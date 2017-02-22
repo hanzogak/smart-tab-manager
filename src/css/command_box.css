@@ -21,8 +21,6 @@
     #smart-tab-manager-command-box > #command-box > .icon {
       float: left;
       margin-right: 15px;
-      background-image: url("https://cdn0.iconfinder.com/data/icons/jfk/512/chrome-512.png");
-      background-size: cover;
       width: 50px;
       height: 50px; }
     #smart-tab-manager-command-box > #command-box #smart-tab-manager-input, #smart-tab-manager-command-box > #command-box #smart-tab-manager-preview {
@@ -43,6 +41,8 @@
       text-align: left; }
       #smart-tab-manager-command-box > #command-box #smart-tab-manager-input:focus, #smart-tab-manager-command-box > #command-box #smart-tab-manager-preview:focus {
         outline: none !important; }
+    #smart-tab-manager-command-box > #command-box #smart-tab-manager-input {
+      color: #424242 !important; }
     #smart-tab-manager-command-box > #command-box #smart-tab-manager-preview {
       color: #bdbdbd !important; }
 
