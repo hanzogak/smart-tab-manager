@@ -12,35 +12,38 @@ var CONST_OLDER = 'older';
  * function for suspend
  */
 function handleSuspend(option, keyword) {
+  if(!keyword){
+    insertErrorMessage("input any keyword");
+  }
+  if(!($.isNumeric(keyword))) {
+    insertErrorMessage("the keyword is not a number");
+    return;
+  } else {
+    if(keyword.valueOf() < 0){
+      insertErrorMessage("time can't be a negative number");
+      return;
+    }
+  }
   if(option === CONST_OLDER){
-    var background = chrome.extension.getBackgroundPage();
-    var currWindowId = undefined;
-    chrome.tabs.query({"currentWindow": true, "active": true}, function(tabs){
-      if(tabs.length == 0){
-        insertErrorMessage('current tab is empty');
-      } else {
-        currWindowId = tabs[0].windowId;
-        console.log('current window id: ' + currWindowId);
-      }
-      var currTabs = background.windows_collection[currWindowId.valueOf()];
+    chrome.tabs.query({"currentWindow": true, "discarded": false}, function(tabs){
+
       var criteria = Math.floor(Date.now()/10) - keyword.valueOf() * 60 * 100;
-      console.log('criteria: ' + criteria);
-      console.log('currTabs: ' + JSON.stringify(currTabs, null, 2));
-      for(var tabid in currTabs){
-        console.log('tabid: ' + tabid.valueOf() + ', value: ' + currTabs[tabid.valueOf()]);
-        if(currTabs[tabid] < criteria){
-          chrome.tabs.discard(parseInt(tabid), function(tab){
-            console.log('tab with id ' + tab.id + 'has been discarded.');
+      for(var i = 0; i < tabs.length; i++){
+        var timevalue = tabsCollection[tabs[i].id];
+        timevalue *= 1;
+        
+        if(timevalue < criteria){
+          chrome.tabs.discard(tabs[i].id, function(tab){
+          console.log('tab with id ' + tab.id + 'has been discarded.');
          });
         }
-
       }
     });
   }
   else if(option === CONST_URL){
     var lowercase_keyword = keyword.toLowerCase();
 
-    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+    chrome.tabs.query({"currentWindow": true, "discarded": false}, function (tabs) {
       var discarded_num = 0;
       for(var i = 0; i < tabs.length; i++){
         var lowercase_url = tabs[i].url.toLowerCase();
@@ -57,7 +60,7 @@ function handleSuspend(option, keyword) {
   else if(option === CONST_TITLE){
     var lowercase_keyword = keyword.toLowerCase();
 
-    chrome.tabs.query({"currentWindow": true}, function (tabs) {
+    chrome.tabs.query({"currentWindow": true, "discarded": false}, function (tabs) {
       var discarded_num = 0;
       for(var i = 0; i < tabs.length; i++){
         var lowercase_title = tabs[i].title.toLowerCase();
@@ -84,12 +87,24 @@ function handleOrder(option) {
       var selectedTabs = [];
 
       for(var i = 0; i < tabs.length; i++) {
-        if(parseInt(tabsCollection[tabs[i].id]) != 0) selectedTabs.push(tabs[i].id);
+        var timevalue = tabsCollection[tabs[i].id];
+        timevalue *= 1;
+        if(timevalue != CONST_INT_MIN){
+          selectedTabs.push(tabs[i].id);
+          console.log('ID ' + tabs[i].id + ', value ' + timevalue + ' is pushed');
+        }
+        else console.log('ID ' + tabs[i].id + ', value ' + timevalue + ' is not pushed');
+        
       }
 
       selectedTabs.sort(function(low, high) {
-        if(parseInt(tabsCollection[low]) < parseInt(tabsCollection[high])) return -1;
-        else if(parseInt(tabsCollection[low]) == parseInt(tabsCollection[high])) return 0;
+        var lowvalue = tabsCollection[low];
+        lowvalue *= 1;
+        var highvalue = tabsCollection[high];
+        highvalue *= 1;
+        console.log('type of low: ' + (typeof lowvalue) + ', type of high: ' + (typeof highvalue) + ', lowval:' + lowvalue + '/highval:' + highvalue + '/');
+        if(lowvalue < highvalue) return -1;
+        else if(lowvalue == highvalue) return 0;
         else return 1;
       });
 
@@ -561,17 +576,24 @@ chrome.runtime.onMessage.addListener(function(message) {
 
 function parseArg(text){
 	var args = text.split(" ");
-	if(args.length < 2 || args.length > 3) {
+	if(args.length < 2) {
 	  insertErrorMessage("Not enough arguments");
 	  return;
   }
 	var command = args[0];
 	var option = args[1].substring(1, args[1].length);
 	var keyword = "";
-	if(args.length == 3) {
-		keyword = args[2];
+	if(args.length >= 3) {
+    var numOfSpace = 0;
+    var i = 0
+    for(i = 0; i<text.length;i++){
+      if(text.charAt(i) == ' ') numOfSpace++;
+      if(numOfSpace == 2) break;
+    }
+    keyword += text.substring(i+1, text.length);
+		//keyword = args.slice(2, args.length);
 	}
-
+ console.log('text: /' + text + '/command: /' + command + '/option: /' + option + '/keyword: /' + keyword + '/');
 	switch(command) {
     case 'search':
       handleSearch(option, keyword);
