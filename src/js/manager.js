@@ -202,3 +202,4 @@ function showGuideLine(){
 
   $('#guideline').text(guideMsg[command][option]);
 }
+
