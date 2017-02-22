@@ -34,7 +34,6 @@ function handleSuspend(option, keyword) {
         
         if(timevalue < criteria){
           chrome.tabs.discard(tabs[i].id, function(tab){
-          console.log('tab with id ' + tab.id + 'has been discarded.');
          });
         }
       }
@@ -91,10 +90,7 @@ function handleOrder(option) {
         timevalue *= 1;
         if(timevalue != CONST_INT_MIN){
           selectedTabs.push(tabs[i].id);
-          console.log('ID ' + tabs[i].id + ', value ' + timevalue + ' is pushed');
         }
-        else console.log('ID ' + tabs[i].id + ', value ' + timevalue + ' is not pushed');
-        
       }
 
       selectedTabs.sort(function(low, high) {
@@ -102,7 +98,7 @@ function handleOrder(option) {
         lowvalue *= 1;
         var highvalue = tabsCollection[high];
         highvalue *= 1;
-        console.log('type of low: ' + (typeof lowvalue) + ', type of high: ' + (typeof highvalue) + ', lowval:' + lowvalue + '/highval:' + highvalue + '/');
+
         if(lowvalue < highvalue) return -1;
         else if(lowvalue == highvalue) return 0;
         else return 1;
@@ -593,7 +589,7 @@ function parseArg(text){
     keyword += text.substring(i+1, text.length);
 		//keyword = args.slice(2, args.length);
 	}
- console.log('text: /' + text + '/command: /' + command + '/option: /' + option + '/keyword: /' + keyword + '/');
+
 	switch(command) {
     case 'search':
       handleSearch(option, keyword);
