@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Smart Tab Manager",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Smart Tab Manager assists users to manage their Chrome tabs efficiently.",
   "background": {
     "scripts": ["src/js/jquery.min.js", "background.js"]
